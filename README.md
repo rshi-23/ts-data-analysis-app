@@ -5,3 +5,39 @@
 * Fixed first and second reversal trial amounts
 * Fixed first and second reversal percent correctness
 * Fixed second reversal duration
+
+### June 28, 2021
+* Fixed first and second reversal trial amounts
+	* Trials count towards the next reversal
+* Fixed the first and second reversal session duration
+	* Changed the time back into seconds
+	* If the first reversal was not met, then it will be placed at 1800 seconds
+	* Changed the second reversal session length into duration, instead of absolute time
+* Fixed the first and second reversal percent correctness
+* Fixed the duplication detection
+	* Duplicates are now detected by sorting the dataframe by total trial amount and session runtime. The script will keep the animals that have a greater total trial amount and total session runtime.
+* Added the ability to extract the last day of each difficulty for LD Probe
+* Added the merged_file.csv and dropped_duplicates.csv
+* Fixed a bug with macOS index out of range error
+	* Caused by having a different file system than Windows
+
+
+### June 24, 2021
+* Added difficulty type for each animal
+* Added percent correctness for the first and second reversal
+
+### June 17, 2021
+* Added Date for each animal
+* Added ID for each animal
+* Added SessionLength for each animal
+* Added NumberOfTrials for each animal
+* Added overall PercentCorrect for each animal
+* Added NumberOfReversals for each animal
+* Added TotalITITouches for each animal
+* Added TotalBlankTouches for each animal
+* Added MeanRewardCollectionLatency for each animal
+* Added MeanCorrectTouchLatency for each animal
+* Added SessionLengthTo1stReversal for each animal
+* Added NumberOfTrialTo1stReversal for each animal
+
+

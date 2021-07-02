@@ -1,4 +1,7 @@
+# Raymon Shi 06/27/21
+import os
 import tkinter as tk
+import time
 from tkinter import filedialog
 import glob
 from ts_data_analysis_functions import *
@@ -6,15 +9,21 @@ from ts_data_analysis_functions import *
 root = tk.Tk()
 # gets rid of tk window
 root.withdraw()
+# make the popup window the topmost window
 root.attributes("-topmost", True)
 
 # asks for the directory with all the RAW DATA csv files
 print('Please open the directory that has all the raw data csv files')
-file_path = filedialog.askdirectory()
+file_path = filedialog.askdirectory(title='Open the directory with csv files')
 
 # passes the folder directory and compiles all the csv files into ONE csv file
-pattern = file_path + '\\*'
+
+pattern = os.path.join(file_path, '*')
 files = glob.glob(pattern)
+
+original_location = os.getcwd()
+script_location = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_location)
 
 try:
     # read the first csv file in the folder
@@ -39,6 +48,7 @@ try:
         df.to_csv('merged_file.csv', index=True)
     except PermissionError:
         print('You may have the merged_file.csv already open! Please close it!')
+        time.sleep(600)
 
     # sort by trial number and runtime
     df = df.sort_values(by=['End Summary - Trials Completed (1)', 'End Summary - Condition (1)'])
@@ -55,6 +65,7 @@ try:
         df_duplicates.to_csv('dropped_duplicates.csv', index=True)
     except PermissionError:
         print('You may have the dropped_duplicates.csv already open! Please close it!')
+        time.sleep(600)
 
     # actually drop the duplicates from the current dataframe and sort the values again
     df = df.drop_duplicates(subset=['Schedule run date', 'Animal ID'],
@@ -79,6 +90,10 @@ try:
     date_header = index_range('Schedule run date', raw_data_headers, df)
     # the correct trials
     number_correct_header = index_range('Trial Analysis - No. Correct (', raw_data_headers, df)
+
+    # headername_list = get_header_names(raw_data_headers, number_correct_header)
+    # print(headername_list)
+
     # the animal id
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     # LD test type: 7&11 = easy, 8&11 = intermediate, 9&10 = hard
@@ -165,14 +180,14 @@ try:
     # fix the reversal number trials
     get_missing_reversal_trials(df_final, col_names)
     # fixed the session time to be duration for each
-    get_fixed_session_time(df_final)
+    get_fixed_session_time(df_final, df)
 
     # get the column headers of the trial numbers
     number_correct_column_names = get_header_names(raw_data_headers, number_correct_header)
 
     # get the percent correctness for first reversal for each row
     df['PercentCorrectTo1stReversal'] = np.nan
-    get_percent_correctness_first(df, number_correct_column_names)
+    get_percent_correctness_first(df, df_final, number_correct_column_names)
     df_final['PercentCorrectTo1stReversal'] = df['PercentCorrectTo1stReversal']
 
     # get the percent correctness for second reversal for each row
@@ -193,9 +208,12 @@ try:
             save_file_path = filedialog.asksaveasfilename(defaultextension='.csv', title='Save the file')
             df_final.to_csv(save_file_path, index=False)
             print('A .csv file has been created. Please look at it in the saved directory!')
+            time.sleep(600)
         except FileNotFoundError:
             print('You closed the window before saving! Please run the program again!')
+            time.sleep(600)
         print('The program has ended!')
+        time.sleep(600)
     elif program_type == '2':
         # for ld probe, we only want columns that are 'easy' or 'hard', delete all other test rows
         df_final.drop(df_final.loc[df_final['Type'] == 'intermediate'].index, inplace=True)
@@ -208,8 +226,12 @@ try:
             print('A .csv file has been created. Please look at it in the saved directory!')
         except FileNotFoundError:
             print('You closed the window before saving! Please run the program again!')
+            time.sleep(600)
         print('The program has ended!')
+        time.sleep(600)
     else:
         raise ValueError('You input an invalid value! Please input 1 for LD Train or 2 for LD Probe!')
 except PermissionError:
     print('You may have closed the window asking for a directory! Or there are no .csv files in this directory!')
+    time.sleep(600)
+

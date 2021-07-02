@@ -50,23 +50,32 @@ def get_missing_reversal_trials(df, column_names):
                 index[0], 'NumberOfTrialTo1stReversal']
 
 
-def get_fixed_session_time(df):
+def get_fixed_session_time(df, df2):
     for index in df.iterrows():
         if index[1]['NumberOfReversal'] == 0:
             df.at[index[0], 'SessionLengthTo1stReversalDuration'] = df.at[index[0], 'SessionLength']
-        if index[1]['NumberOfReversal'] > 0:
+        elif index[1]['NumberOfReversal'] == 1:
             df.at[index[0], 'SessionLengthTo2ndReversalDuration'] = df.at[index[0], 'SessionLength'] - df.at[
                 index[0], 'SessionLengthTo1stReversalDuration']
+        else:
+            df.at[index[0], 'SessionLengthTo2ndReversalDuration'] = df2.at[index[
+                                                                              0], 'No trials to criterion - Condition (2)'] - \
+                                                                    df2.at[index[
+                                                                              0], 'No trials to criterion - Condition (1)']
 
 
 # a function that gets the first reversal correctness
-def get_percent_correctness_first(df1, column_names):
+def get_percent_correctness_first(df1, df2, column_names):
     for index in df1.iterrows():
         stop_point = df1.at[index[0], 'No trials to criterion - Generic Evaluation (1)']
         # if did not reach first reversal, make the value the correct percentage value
-        if np.isnan(stop_point) or math.isnan(stop_point):
+        if np.isnan(stop_point) and index[1]['End Summary - Times Criteria reached (1)'] == 0:
+            stop_point = df1.at[index[0], 'End Summary - Trials Completed (1)']
             df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1.at[index[
-                                                                         0], 'End Summary - Percentage Correct (1)'] / 100
+                                                                        0], 'End Summary - Percentage Correct (1)'] / 100
+            int_stop_point = int(stop_point)
+            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point+1]].mean(axis=1)[index[0]]
+            df2.at[index[0], 'NumberOfTrialTo1stReversal'] = int_stop_point + 1
         else:
             int_stop_point = int(stop_point)
             df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point]].mean(axis=1)[index[0]]
@@ -79,9 +88,15 @@ def get_percent_correctness_second(df1, df2, column_names):
         stop_point = df2.at[index[0], 'NumberOfTrialTo2ndReversal'] + start_point
         if np.isnan(start_point) or np.isnan(stop_point):
             df1.at[index[0], 'PercentCorrectTo2ndReversal'] = np.nan
+        elif index[1]['End Summary - Times Criteria reached (1)'] == 1:
+            int_start_point = int(start_point)
+            list_wo_nans = df1[column_names[int_start_point:]].count(axis=1).tolist()
+            df1.at[index[0], 'PercentCorrectTo2ndReversal'] = \
+                df1[column_names[int_start_point:]].mean(axis=1)[index[0]]
+            df2.at[index[0], 'NumberOfTrialTo2ndReversal'] = list_wo_nans[index[0]]
         else:
             int_start_point = int(start_point)
-            int_stop_point = int(stop_point) + int_start_point
+            int_stop_point = int(stop_point)
             df1.at[index[0], 'PercentCorrectTo2ndReversal'] = \
                 df1[column_names[int_start_point:int_stop_point]].mean(axis=1)[index[0]]
 

@@ -1,6 +1,29 @@
 # ts-data-analysis-script
 
 ## Change Log
+### July 5, 2021
+* Added LD Probe(Block Avg) button and functionality
+* Added LD Probe(ID Avg) button and functionality
+### July 4, 2021
+* Added LD Probe(Last Day Avg) button and functionality
+### July 3, 2021
+* Added LD Train (Select Animal ID) button and functionality
+* Added LD Probe (Last Day Difficulty All) button and functionality
+* Added LD Probe (Select Day) button and functionality
+* Added LD Probe (Select ID) button and functionality
+* Added LD Probe (Select Block) button and functionality
+### July 2, 2021
+* Fixed the LD Train output csv
+* All animals now stop at the criteria met day or the very last day of test if the criteria was not met
+* Added an option to LD Train to select which day for all animals
+* Added an option to LD Train to select all first day for all animals  
+* Added an option to LD Train to select all last criteria met day for all animals
+* Started working on the GUI
+	* Added LD Train (All) button and functionality
+	* Added LD Train (Select Day) button and functionality
+	* Added LD Train (First Day) button and functionality
+	* Added LD Train (Last Day) button and functionality
+
 ### July 1, 2021
 * Fixed first and second reversal trial amounts
 * Fixed first and second reversal percent correctness

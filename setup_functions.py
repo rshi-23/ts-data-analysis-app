@@ -58,9 +58,9 @@ def get_fixed_session_time(df, df2):
                 index[0], 'SessionLengthTo1stReversalDuration']
         else:
             df.at[index[0], 'SessionLengthTo2ndReversalDuration'] = df2.at[index[
-                                                                              0], 'No trials to criterion - Condition (2)'] - \
+                                                                               0], 'No trials to criterion - Condition (2)'] - \
                                                                     df2.at[index[
-                                                                              0], 'No trials to criterion - Condition (1)']
+                                                                               0], 'No trials to criterion - Condition (1)']
 
 
 # a function that gets the first reversal correctness
@@ -68,12 +68,16 @@ def get_percent_correctness_first(df1, df2, column_names):
     for index in df1.iterrows():
         stop_point = df1.at[index[0], 'No trials to criterion - Generic Evaluation (1)']
         # if did not reach first reversal, make the value the correct percentage value
-        if np.isnan(stop_point) and index[1]['End Summary - Times Criteria reached (1)'] == 0:
+        if np.isnan(stop_point) or index[1]['End Summary - Times Criteria reached (1)'] == 0:
             stop_point = df1.at[index[0], 'End Summary - Trials Completed (1)']
             df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1.at[index[
-                                                                        0], 'End Summary - Percentage Correct (1)'] / 100
+                                                                         0], 'End Summary - Percentage Correct (1)'] / 100
             int_stop_point = int(stop_point)
-            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point+1]].mean(axis=1)[index[0]]
+            # print(index[1]['Schedule run date'], index[1]['Animal ID'], df1[column_names[0:int_stop_point+1]].mean(axis=1)[
+            #     index[0]], 'here')
+            # print(column_names[0:int_stop_point+1], 'column names')
+            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point+1]].mean(axis=1)[
+                index[0]]
             df2.at[index[0], 'NumberOfTrialTo1stReversal'] = int_stop_point + 1
         else:
             int_stop_point = int(stop_point)
@@ -112,4 +116,3 @@ def get_test_type(df1, column_names):
             df1.at[index[0], 'Type'] = 'easy'
         else:
             df1.at[index[0], 'Type'] = 'undetermined'
-

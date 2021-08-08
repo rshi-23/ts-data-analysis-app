@@ -1,15 +1,10 @@
-import numpy as np
-import pandas as pd
-
 from setup import *
-import math
 
 
 def get_last_day_difficulty(df):
     df['Day'] = df.groupby('ID').cumcount() + 1
     df['Day'] = df['Day'].astype(float)
     df['Block'] = np.ceil(df['Day'] / 4)
-    # delete all odd day occurrences, assume last day of each difficulty is always an even day
     df.drop(df.loc[df['Day'] % 2 == 1].index, inplace=True)
 
 
@@ -23,29 +18,40 @@ def ld_probe_delete_other_difficulties(df):
 
 def ld_probe_last_day_difficulty():
     print('You have selected the LD Probe(Last Day Difficulty) button!')
-    df = data_setup()
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         get_last_day_difficulty(df)
         save_file_message(df)
 
 
+def ld_probe_widget_check(widget):
+    if len(widget.get()) != 0 and widget.get().isnumeric():
+        widget_value = int(widget.get())
+    else:
+        print('Enter a numeric value for the day or ID or block number!')
+        return
+
+    return widget_value
+
+
 def ld_probe_select_day(enter_day):
     print('You have selected the LD Probe(Select Day) button!')
-    df = data_setup()
+    selected_day = ld_probe_widget_check(enter_day)
+
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
-        selected_day = int(enter_day.get())
         df = df.loc[df['Day'] == selected_day]
         save_file_message(df)
 
 
 def ld_probe_select_id(enter_id):
     print('You have selected the LD Probe(Select ID) button!')
-    df = data_setup()
+    selected_id = ld_probe_widget_check(enter_id)
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
-        selected_id = int(enter_id.get())
         df = df.loc[df['ID'] == selected_id]
         save_file_message(df)
 
@@ -53,11 +59,13 @@ def ld_probe_select_id(enter_id):
 def ld_probe_select_block(block_number):
     print('You have selected the LD Probe(Select Block) button!')
 
-    block_day_range_max = 4 * int(block_number.get())
+    selected_block = ld_probe_widget_check(block_number)
+
+    block_day_range_max = 4 * selected_block
     block_day_range_min = block_day_range_max - 3
     block_day_total_range = [*range(block_day_range_min, block_day_range_max + 1, 1)]
 
-    df = data_setup()
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         df = df.loc[(df['Day'] == block_day_total_range[1]) | (df['Day'] == block_day_total_range[3])]
@@ -109,13 +117,14 @@ def averaging_process(df):
 
 
 def ld_probe_last_day_avg():
-    df = data_setup()
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         df.sort_values(['ID', 'Day'], ascending=[1, 1], inplace=True)
         df.reset_index(drop=True, inplace=True)
 
-        col_names = ['Date', 'ID', 'Type', 'Day', 'SessionLength', 'NumberOfTrial', 'PercentCorrect', 'NumberOfReversal',
+        col_names = ['Date', 'ID', 'Type', 'Day', 'SessionLength', 'NumberOfTrial', 'PercentCorrect',
+                     'NumberOfReversal',
                      'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
                      'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
                      'SessionLengthTo2ndReversalDuration',
@@ -130,12 +139,12 @@ def ld_probe_last_day_avg():
 
 def ld_probe_block_average(block_number):
     print('You have selected the LD Probe(Select Block Average) button!')
-
-    block_day_range_max = 4 * int(block_number.get())
+    selected_block = ld_probe_widget_check(block_number)
+    block_day_range_max = 4 * selected_block
     block_day_range_min = block_day_range_max - 3
     block_day_total_range = [*range(block_day_range_min, block_day_range_max + 1, 1)]
 
-    df = data_setup()
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         df = df.loc[df['Day'].isin(block_day_total_range)]
@@ -143,7 +152,8 @@ def ld_probe_block_average(block_number):
         df.sort_values(['ID', 'Day'], ascending=[1, 1], inplace=True)
         df.reset_index(drop=True, inplace=True)
 
-        col_names = ['Date', 'ID', 'Type', 'Day', 'SessionLength', 'NumberOfTrial', 'PercentCorrect', 'NumberOfReversal',
+        col_names = ['Date', 'ID', 'Type', 'Day', 'SessionLength', 'NumberOfTrial', 'PercentCorrect',
+                     'NumberOfReversal',
                      'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
                      'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
                      'SessionLengthTo2ndReversalDuration',
@@ -158,7 +168,7 @@ def ld_probe_block_average(block_number):
 
 def ld_probe_id_average(animal_id):
     print('You have selected the LD Probe(Select ID Avg) button!')
-    df = data_setup()
+    df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         selected_id = int(animal_id.get())
@@ -167,7 +177,8 @@ def ld_probe_id_average(animal_id):
         df.sort_values(['ID', 'Day'], ascending=[1, 1], inplace=True)
         df.reset_index(drop=True, inplace=True)
 
-        col_names = ['Date', 'ID', 'Type', 'Day', 'SessionLength', 'NumberOfTrial', 'PercentCorrect', 'NumberOfReversal',
+        col_names = ['Date', 'ID', 'Type', 'Day', 'SessionLength', 'NumberOfTrial', 'PercentCorrect',
+                     'NumberOfReversal',
                      'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
                      'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
                      'SessionLengthTo2ndReversalDuration',
@@ -206,22 +217,25 @@ def make_ld_probe_buttons(tk, root):
                                                  ld_probe_block_number), width=30)
     ld_probe_button_select_block.grid(row=3, column=0)
 
+    spacer_btn = tk.Label(root, text='', width=57, bg='#D6D6D6')
+    spacer_btn.grid(row=4, columnspan=2)
+
     ld_probe_button_last_day_avg = tk.Button(root, text='LD Probe (Last Day All Avg)', command=ld_probe_last_day_avg,
                                              width=30
                                              )
-    ld_probe_button_last_day_avg.grid(row=4, column=0)
+    ld_probe_button_last_day_avg.grid(row=5, column=0)
 
     ld_probe_button_block_avg_text = tk.Entry(root, width=30, justify='center')
-    ld_probe_button_block_avg_text.grid(row=5, column=1)
+    ld_probe_button_block_avg_text.grid(row=6, column=1)
 
     ld_probe_button_block_avg = tk.Button(root, text='LD Probe (Block Avg)',
                                           command=lambda: ld_probe_block_average(ld_probe_button_block_avg_text),
                                           width=30)
-    ld_probe_button_block_avg.grid(row=5, column=0)
+    ld_probe_button_block_avg.grid(row=6, column=0)
 
     ld_probe_button_id_avg_text = tk.Entry(root, width=30, justify='center')
-    ld_probe_button_id_avg_text.grid(row=6, column=1)
+    ld_probe_button_id_avg_text.grid(row=7, column=1)
 
     ld_probe_button_id_avg = tk.Button(root, text='LD Probe (ID Avg)',
                                        command=lambda: ld_probe_id_average(ld_probe_button_id_avg_text), width=30)
-    ld_probe_button_id_avg.grid(row=6, column=0)
+    ld_probe_button_id_avg.grid(row=7, column=0)

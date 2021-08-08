@@ -27,6 +27,8 @@ def convert_to_int(header_index_range, raw_data_headers, dataframe):
     dataframe.replace('999999999', np.nan, regex=True, inplace=True)
     dataframe.replace(999999999, np.nan, regex=True, inplace=True)
 
+    return dataframe
+
 
 # a function that gets the indice range for specific headers
 def index_range(keyword, header_list, dataframe):
@@ -73,10 +75,8 @@ def get_percent_correctness_first(df1, df2, column_names):
             df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1.at[index[
                                                                          0], 'End Summary - Percentage Correct (1)'] / 100
             int_stop_point = int(stop_point)
-            # print(index[1]['Schedule run date'], index[1]['Animal ID'], df1[column_names[0:int_stop_point+1]].mean(axis=1)[
-            #     index[0]], 'here')
-            # print(column_names[0:int_stop_point+1], 'column names')
-            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point+1]].mean(axis=1)[
+
+            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point + 1]].mean(axis=1)[
                 index[0]]
             df2.at[index[0], 'NumberOfTrialTo1stReversal'] = int_stop_point + 1
         else:

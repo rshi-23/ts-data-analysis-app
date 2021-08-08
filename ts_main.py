@@ -1,14 +1,13 @@
 import tkinter as tk
-
-from parameterized import *
 import webbrowser
-
+from parameterized import *
 
 root = tk.Tk()
-root.geometry('404x345')
+root.geometry('404x765')
 root.title('Raymon Shi Touchscreen Data Analysis App')
 root.rowconfigure(0, weight=1)
 root.columnconfigure(0, weight=1)
+root.resizable(False, False)
 
 
 def display_frame(frame_page):
@@ -50,37 +49,43 @@ def main_page_frame_buttons():
     main_extinction_btn = tk.Button(main_page_frame, text='Extinction Paradigm',
                                     command=lambda: display_frame(extinction_paradigm_frame))
     main_extinction_btn.grid(row=4, column=0)
-    main_parameterized_btn = tk.Button(main_page_frame, text='Parameterized', command=lambda: display_frame(parameterized_frame))
+    main_parameterized_btn = tk.Button(main_page_frame, text='Parameterized',
+                                       command=lambda: display_frame(parameterized_frame))
     main_parameterized_btn.grid(row=5, column=0)
     main_github_code_btn = tk.Button(main_page_frame, text='Github Code Page', command=lambda: webbrowser.open(
         'https://github.com/raymon-shi/ts-data-analysis-script'))
     main_github_code_btn.grid(row=6, column=0)
 
 
-def main_menu_buttons(tk, frame):
+def main_menu_buttons(frame):
     main_menu_btn = tk.Button(frame, text='Main Menu', command=lambda: display_frame(main_page_frame), width=30)
-    spacer_btn = tk.Label(frame, text='')
-    spacer_btn.grid(row=15, column=0)
-    main_menu_btn.grid()
+    spacer_btn = tk.Label(frame, text='', width=57, bg='#D6D6D6')
+    spacer_btn.grid(row=30, columnspan=2)
+    main_menu_btn.grid(columnspan=2)
 
 
-make_general_ts_buttons(tk, general_ts_frame)
-main_menu_buttons(tk, general_ts_frame)
+def make_gui():
+    make_general_ts_buttons(tk, general_ts_frame)
+    main_menu_buttons(general_ts_frame)
 
-make_ld_train_buttons(tk, ld_train_frame)
-main_menu_buttons(tk, ld_train_frame)
+    make_ld_train_buttons(tk, ld_train_frame)
+    main_menu_buttons(ld_train_frame)
 
-make_ld_probe_buttons(tk, ld_probe_frame)
-main_menu_buttons(tk, ld_probe_frame)
+    make_ld_probe_buttons(tk, ld_probe_frame)
+    main_menu_buttons(ld_probe_frame)
 
-make_extinction_buttons(tk, extinction_paradigm_frame)
-main_menu_buttons(tk, extinction_paradigm_frame)
+    make_extinction_buttons(tk, extinction_paradigm_frame)
+    main_menu_buttons(extinction_paradigm_frame)
 
-make_parameterized_button(tk, parameterized_frame)
-main_menu_buttons(tk, parameterized_frame)
+    make_parameterized_button(tk, parameterized_frame)
+    main_menu_buttons(parameterized_frame)
 
-display_frame(main_page_frame)
+    display_frame(main_page_frame)
 
-main_page_frame_buttons()
+    main_page_frame_buttons()
 
-root.mainloop()
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    make_gui()

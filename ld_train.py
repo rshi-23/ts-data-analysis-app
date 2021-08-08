@@ -1,10 +1,9 @@
-import numpy as np
 from setup import *
 
 
-def get_ld_last_days(df, criteria, max_days):
+def get_ld_last_days(df, criteria, max_days, min_reversal_number):
     df_copy = df.copy(deep=True)
-    df_copy = df_copy.loc[df_copy['NumberOfReversal'] > 1]
+    df_copy = df_copy.loc[df_copy['NumberOfReversal'] >= min_reversal_number]
 
     df_copy.sort_values(['ID', 'Day'], inplace=True)
     df_copy.reset_index(drop=True, inplace=True)
@@ -51,14 +50,14 @@ def get_ld_last_days(df, criteria, max_days):
     return df_copy
 
 
-def get_ld_train_normal(df, criteria, max_days):
-    df_copy = get_ld_last_days(df, criteria, max_days)
+def get_ld_train_normal(df, criteria, max_days, min_reversal_number):
+    df_copy = get_ld_last_days(df, criteria, max_days, min_reversal_number)
     for index in df_copy.iterrows():
         df.drop(df.loc[(df['ID'] == index[1]['ID']) & (df['Day'] > index[1]['Day'])].index, inplace=True)
 
 
-def get_ld_train_criteria_day_all(df, criteria, max_days):
-    get_ld_train_normal(df, criteria, max_days)
+def get_ld_train_criteria_day_all(df, criteria, max_days, min_reversal_number):
+    get_ld_train_normal(df, criteria, max_days, min_reversal_number)
     df.drop_duplicates(subset='ID', keep='last', inplace=True)
 
 
@@ -71,72 +70,101 @@ def ld_train_delete_other_difficulties(df):
     df['Day'] = df.groupby('ID').cumcount() + 1
 
 
-def button_ld_train_all(criteria):
-    df = data_setup()
-    if df is not None:
-        ld_train_delete_other_difficulties(df)
-
+def ld_train_criteria_min_rev_check(criteria, min_reversal_number):
+    if len(criteria.get()) != 0:
         criteria_list = criteria.get().split('/')
+    else:
+        print('Enter the LD Train criteria as n/n+1 days!')
+        return
+
+    if len(min_reversal_number.get()) != 0 and min_reversal_number.get().isnumeric():
+        min_rev = int(min_reversal_number.get())
+    else:
+        print('Please enter a numeric minimum reversal number!')
+        return
+
+    return criteria_list, min_rev
+
+
+def ld_criteria_list_check(criteria_list):
+    try:
         criteria_value = int(criteria_list[0])
         criteria_max_days = int(criteria_list[1])
+        return criteria_value, criteria_max_days
+    except ValueError:
+        print('Enter numeric values for the criteria n/n+1 days')
+        return
 
-        get_ld_train_normal(df, criteria_value, criteria_max_days)
+
+def button_ld_train_all(criteria, min_reversal_number):
+    df = data_setup('LD Train')
+    criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
+
+    if df is not None:
+        ld_train_delete_other_difficulties(df)
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+        get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
 
 
-def button_ld_train_select_day(enter_day, criteria):
+def button_ld_train_select_day(enter_day, criteria, min_reversal_number):
     print('You have selected the LD Train(Select Day) button!')
-    df = data_setup()
+    if len(enter_day.get()) != 0 and enter_day.get().isnumeric():
+        selected_day = int(enter_day.get())
+    else:
+        print('Enter a numeric day value for LD Train (Select Day)')
+        return
+
+    criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
+
+    df = data_setup('LD Train')
     if df is not None:
         ld_train_delete_other_difficulties(df)
-
-        criteria_list = criteria.get().split('/')
-        criteria_value = int(criteria_list[0])
-        criteria_max_days = int(criteria_list[1])
-
-        get_ld_train_normal(df, criteria_value, criteria_max_days)
-        selected_day = int(enter_day.get())
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+        get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         df = df.loc[df['Day'] == selected_day]
         save_file_message(df)
 
 
-def button_ld_train_first_day(criteria):
+def button_ld_train_first_day(criteria, min_reversal_number):
     print('You have selected the LD Train(First Day) button!')
-    df = data_setup()
+    criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
+
+    df = data_setup('LD Train')
     if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_list = criteria.get().split('/')
-        criteria_value = int(criteria_list[0])
-        criteria_max_days = int(criteria_list[1])
-
-        get_ld_train_normal(df, criteria_value, criteria_max_days)
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+        get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         df = df.loc[df['Day'] == 1]
         save_file_message(df)
 
 
-def button_ld_train_last_day(criteria):
+def button_ld_train_last_day(criteria, min_reversal_number):
     print('You have selected the LD Train(Last Day) button!')
-    df = data_setup()
+    criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
+
+    df = data_setup('LD Train')
     if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_list = criteria.get().split('/')
-        criteria_value = int(criteria_list[0])
-        criteria_max_days = int(criteria_list[1])
-        get_ld_train_criteria_day_all(df, criteria_value, criteria_max_days)
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+        get_ld_train_criteria_day_all(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
 
 
-def button_ld_train_select_id(enter_id, criteria):
+def button_ld_train_select_id(enter_id, criteria, min_reversal_number):
     print('You have selected the LD Train(Select ID) button!')
-    df = data_setup()
+    if len(enter_id.get()) != 0 and enter_id.get().isnumeric():
+        selected_id = int(enter_id.get())
+    else:
+        print('Enter a numeric id value for LD Train (Select ID)')
+        return
+    criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
+
+    df = data_setup('LD Train')
     if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_list = criteria.get().split('/')
-        criteria_value = int(criteria_list[0])
-        criteria_max_days = int(criteria_list[1])
-
-        get_ld_train_normal(df, criteria_value, criteria_max_days)
-        selected_id = int(enter_id.get())
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+        get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         df = df.loc[df['ID'] == selected_id]
         save_file_message(df)
 
@@ -148,30 +176,39 @@ def make_ld_train_buttons(tk, root):
     criteria_text = tk.Entry(root, width=30, justify='center')
     criteria_text.grid(row=0, column=1)
 
-    ld_train_button_all = tk.Button(root, text='LD Train (All)', command=lambda: button_ld_train_all(criteria_text),
+    min_reversal_num_label = tk.Label(root, text='Enter the min reversal number req:')
+    min_reversal_num_label.grid(row=1, column=0)
+    min_reversal_num_text = tk.Entry(root, width=30, justify='center')
+    min_reversal_num_text.grid(row=1, column=1)
+
+    ld_train_button_all = tk.Button(root, text='LD Train (All)',
+                                    command=lambda: button_ld_train_all(criteria_text, min_reversal_num_text),
                                     width=30)
-    ld_train_button_all.grid(row=1, column=0)
+    ld_train_button_all.grid(row=2, column=0)
 
     enter_day = tk.Entry(root, width=30, justify='center')
-    enter_day.grid(row=2, column=1)
+    enter_day.grid(row=3, column=1)
 
     ld_train_button_select_day = tk.Button(root, text='LD Train (Select Day)',
-                                           command=lambda: button_ld_train_select_day(enter_day, criteria_text),
+                                           command=lambda: button_ld_train_select_day(enter_day, criteria_text,
+                                                                                      min_reversal_num_text),
                                            width=30)
-    ld_train_button_select_day.grid(row=2, column=0)
+    ld_train_button_select_day.grid(row=3, column=0)
 
     ld_train_button_first_day = tk.Button(root, text='LD Train (First Day)',
-                                          command=lambda: button_ld_train_first_day(criteria_text), width=30
+                                          command=lambda: button_ld_train_first_day(criteria_text,
+                                                                                    min_reversal_num_text), width=30
                                           )
-    ld_train_button_first_day.grid(row=3, column=0)
+    ld_train_button_first_day.grid(row=4, column=0)
 
     ld_train_button_last_day = tk.Button(root, text='LD Train (Last Day)',
-                                         command=lambda: button_ld_train_last_day(criteria_text), width=30)
-    ld_train_button_last_day.grid(row=4, column=0)
+                                         command=lambda: button_ld_train_last_day(criteria_text, min_reversal_num_text),
+                                         width=30)
+    ld_train_button_last_day.grid(row=5, column=0)
 
     enter_id = tk.Entry(root, width=30, justify='center')
-    enter_id.grid(row=5, column=1)
+    enter_id.grid(row=6, column=1)
 
     ld_train_button_select_id = tk.Button(root, text='LD Train (Select Animal ID)',
                                           command=lambda: button_ld_train_select_id(enter_id, criteria_text), width=30)
-    ld_train_button_select_id.grid(row=5, column=0)
+    ld_train_button_select_id.grid(row=6, column=0)

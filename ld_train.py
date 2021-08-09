@@ -39,13 +39,9 @@ def get_ld_last_days(df, criteria, max_days, min_reversal_number):
 
         row_index += 1
 
-    df_copy.to_csv('why date missing2.csv')
-
     df_copy = df_copy.loc[df_copy['Criteria Passed?'] == 'yes']
     df_copy['Mice ID'] = df_copy['ID']
     df_copy = df_copy.groupby('Mice ID').first()
-
-    df_copy.to_csv('why date missing.csv')
 
     return df_copy
 

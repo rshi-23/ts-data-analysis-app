@@ -9,94 +9,140 @@ pd.options.mode.chained_assignment = 'raise'
 
 
 def specific_schedule_name(df, schedule_name):
+    """
+    This function returns a new df with specific animal schedule type, removes the timestamp from the schedule date, and
+    sorts the df by run date and ID in ascending order
+    :param df: The dataframe that represents the raw ABET file
+    :param schedule_name: The name of the test the mouse ran, found under the schedule name in raw data
+    :return: A dataframe that only contains rows for animals that performed the specific schedule name, sorted in
+    ascending order by run date and ID
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     try:
         df = df.loc[df['Schedule name'] == schedule_name]
-
         # get rid of the timestamp from the SCHEDULE DATE column
         df['Schedule run date'] = pd.to_datetime(df['Schedule run date']).dt.date
-
         # sort the csv file by date and animal id in ascending order
         df = df.sort_values(['Schedule run date', 'Animal ID'], ascending=[1, 1])
-
         # reset the indices of the combined csv file
         df = df.reset_index(drop=True)
-
         return df
-
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print('specific_schedule_name() error: either you have selected the wrong type of test',
+              'or the headers are not the same for all files!')
         return
 
 
 def create_merge_file(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function creates a csv file called 'merged_file.csv'. This file appends all the raw files together and puts
+    them on a single csv file. Useful for testing or just looking at all the data in one file.
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located and used to store this file there as well
+    :except PermissionError: If the merged_file.csv' is already open, it will not update and this function will return
+    and stop.
+    :except AttributeError: If you run this on non-raw data files,this function will return and stop.
+    """
+
     try:
+        df.to_csv('merged_file.csv', index=False)
         print(
             'A file called "merged_file.csv" has been created in the same directory as the script! The location is:',
             script_location)
-        df.to_csv('merged_file.csv', index=False)
     except PermissionError:
-        print('You may have the merged_file.csv already open! Please close it!')
+        print('create_merge_file() error: You may have the "merged_file.csv" already open! Please close it!')
+        return
+    except AttributeError:
+        print('create_merge_file() error: These are not the correct raw data files!')
         return
 
 
 def create_dropped_duplicates_file(df, script_location):
+    """
+    This function creates a csv file called 'dropped_duplicates.csv'. This file shows all the rows that were treated as
+    duplicates and removed from the working dataframe. Useful for testing and making sure the correct
+    duplicates/unwanted were removed from the working dataframe.
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located and used to store this file there as well
+    :except PermissionError: If the 'dropped_duplicates.csv' is already open, it will not update and this function will
+    return and stop.
+    :except AttributeError: If you run this on non-raw data files,this function will return and stop.
+    """
+
     try:
+        df.to_csv('dropped_duplicates.csv', index=False)
         print('A file called "dropped_duplicates.csv" has been created in the same directory! The location is:',
               script_location)
-        df.to_csv('dropped_duplicates.csv', index=False)
     except PermissionError:
-        print('You may have the dropped_duplicates.csv already open! Please close it!')
+        print('create_dropped_duplicates_file() error: You may have the "merged_file.csv" already open!',
+              'Please close it!')
+        return
+    except AttributeError:
+        print('create_dropped_duplicates_file() error: These are not the correct raw data files!')
         return
 
 
 def remove_duplicates(df, script_location):
+    """
+    This function actually drops the duplicate rows from the working dataframe.
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located and used to store this file there as well
+    :return: A version of the raw ABET file dataframe with the duplicates removed
+    """
+
     # create a dataframe that holds the duplicates
     df_duplicates = pd.DataFrame()
     duplicates = df.duplicated(subset=['Schedule run date', 'Animal ID'], keep='last')
     df_duplicates = df_duplicates.append(df.loc[duplicates])
-
-    # sort the duplicates
     df_duplicates.sort_values(['Schedule run date', 'Animal ID'], ascending=[1, 1], inplace=True)
 
     create_dropped_duplicates_file(df_duplicates, script_location)
 
-    # actually drop the duplicates from the current dataframe and sort the values again
-    df = df.drop_duplicates(subset=['Schedule run date', 'Animal ID'],
-                            keep='last')
+    # actually drop the duplicates from the working df
+    df = df.drop_duplicates(subset=['Schedule run date', 'Animal ID'], keep='last')
     df = df.sort_values(['Schedule run date', 'Animal ID'], ascending=[1, 1])
-
-    # reset the index again
     df = df.reset_index(drop=True)
 
     return df
 
 
 def habituation_one(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
-    create_merge_file(df, script_location)
+    """
+    This function is used to specifically get cleaned data for the Habituation 1 test. The resulting dataframe will have
+    the following headers: 'Date', 'ID', 'SessionLength', 'RewardIRBeamBrokenCount', 'ScreenIRBeamBrokenCount',
+    'CrossedRewardToScreen', 'CrossedScreenToReward', 'BottomWindowTouches', 'TopWindowTouches', 'TrayEnteredCount',
+    'Day'
 
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Habituation 1 data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
+    create_merge_file(df, script_location)
     print('The program is running... Please wait....')
 
-    # sort by trial number and runtime
+    # sort by time and remove duplicates
     df = df.sort_values(by=['End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
     reward_ir_beam = index_range('End Summary - Reward IR Beam broken (1)', raw_data_headers, df)
     screen_ir_beam = index_range('End Summary - Screen IR Beam broken (1)', raw_data_headers, df)
     reward_to_screen = index_range('End Summary - Crossed reward to screen (1)', raw_data_headers, df)
-    screen_to_reward = index_range('End Summary - Crossed Screen to reward (1)', raw_data_headers,
-                                   df)
+    screen_to_reward = index_range('End Summary - Crossed Screen to reward (1)', raw_data_headers, df)
     bottom_window_touches = index_range('End Summary - Touches to bottom screen windows (1)', raw_data_headers, df)
     top_window_touches = index_range('End Summary - Touches to top screen windows (1)', raw_data_headers, df)
     tray_entered_count = index_range('End Summary - Tray Entered - Cnt (1)', raw_data_headers, df)
@@ -109,12 +155,10 @@ def habituation_one(df, script_location):
 
     df_final = pd.DataFrame(columns=col_names)
 
+    # extract the necessary data from raw data
     try:
-        # get the date for each row
         df_final['Date'] = df.iloc[:, date_header[0]]
-        # get the animal id for each row
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
-        # get the session time for each row
         df_final['SessionLength'] = df.iloc[:, session_length_header[0]]
         df_final['RewardIRBeamBrokenCount'] = df.iloc[:, reward_ir_beam[0]]
         df_final['ScreenIRBeamBrokenCount'] = df.iloc[:, screen_ir_beam[0]]
@@ -127,7 +171,8 @@ def habituation_one(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print('habituation_one() error: either you selected the wrong type of test '
+              'or headers are not the same on all files!')
         return
     print('The program is almost done running... Please wait....')
 
@@ -135,30 +180,39 @@ def habituation_one(df, script_location):
 
 
 def habituation_two(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the Habituation 2 test. The resulting dataframe will have
+    the following headers: 'Date', 'ID', 'SessionLength', 'NumberOfTrial', 'RewardIRBeamBrokenCount',
+    'ScreenIRBeamBrokenCount', 'BottomLeftWindowTouches', 'BottomRightWindowTouches', 'TopWindowTouches',
+    'TrayEnteredCount', 'MeanRewardCollectionLatency', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Habituation 2 data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by time and remove duplicates
     df = df.sort_values(by=['End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
-    # the mm/dd/yyyy of the program
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
-    # the animal id
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    # session length
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
     total_trials = index_range('End Summary - Trial Completed (1)', raw_data_headers, df)
     reward_ir_beam = index_range('End Summary - Reward IR Breaks - Reward Beam Cnt (1)', raw_data_headers, df)
-    # blank touches
     screen_ir_beam = index_range('End Summary - Screen IR Breaks - Screen IR Cnt (1)', raw_data_headers, df)
-    # total iti touches
     bottom_left_window_touches = index_range('End Summary -  Bottom Left Touches - Bottom Left Cnt (1)',
                                              raw_data_headers, df)
     bottom_right_window_touches = index_range('End Summary - Bottom Right Touches - Bottom Right Cnt (1)',
@@ -176,6 +230,7 @@ def habituation_two(df, script_location):
 
     df_final = pd.DataFrame(columns=col_names)
 
+    # extract the necessary data from raw data
     try:
         df_final['Date'] = df.iloc[:, date_header[0]]
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
@@ -192,7 +247,9 @@ def habituation_two(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print(
+            'habituation_two() error: Either you selected the wrong type of test '
+            'or headers are not the same on all files!')
         return
     print('The program is almost done running... Please wait....')
 
@@ -200,19 +257,32 @@ def habituation_two(df, script_location):
 
 
 def initial_touch(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the Initial Touch test. The resulting dataframe will have
+    the following headers: 'Date', 'ID', 'SessionLength', 'ImagesTouched', 'Corrects', 'BlankTouches','TotalITITouches',
+    'MeanCorrectTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Initial Touch data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by time and remove duplicates
     df = df.sort_values(by=['End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
@@ -248,7 +318,9 @@ def initial_touch(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print(
+            'initial_touch() error: Either you selected the wrong type of test '
+            'or headers are not the same on all files!')
         return
     print('The program is almost done running... Please wait....')
 
@@ -256,19 +328,33 @@ def initial_touch(df, script_location):
 
 
 def must_touch_initiate(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the Must Touch/Must Initiate test. The resulting
+    dataframe will have the following headers: 'Date', 'ID', 'SessionLength', 'Corrects', 'TotalBlankTouches',
+    'TotalITITouches', 'MeanCorrectTouchLatency', 'MeanCorrectRightTouchLatency', 'MeanCorrectLeftTouchLatency',
+    'MeanCorrectLeftRightTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Initial Touch data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by corrects and time, remove duplicates
     df = df.sort_values(by=['End Summary - Corrects (1)', 'End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
@@ -291,10 +377,9 @@ def must_touch_initiate(df, script_location):
 
     df_final = pd.DataFrame(columns=col_names)
 
+    # extract the necessary data from raw data
     try:
-        # get the date for each row
         df_final['Date'] = df.iloc[:, date_header[0]]
-        # get the animal id for each row
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
         df_final['SessionLength'] = df.iloc[:, session_length_header[0]]
         df_final['Corrects'] = df.iloc[:, correct_header[0]]
@@ -311,7 +396,9 @@ def must_touch_initiate(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print(
+            'must_touch_initiate() error: Either you selected the wrong type of test '
+            'or headers are not the same on all files!')
         return
     print('The program is almost done running... Please wait....')
 
@@ -319,19 +406,33 @@ def must_touch_initiate(df, script_location):
 
 
 def punish_incorrect(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the Punish Incorrect test. The resulting dataframe will
+    have the following headers: 'Date', 'ID', 'SessionLength', 'NumberOfTrial', 'PercentCorrect', 'TotalITITouches',
+    'MeanCorrectTouchLatency', 'MeanCorrectRightTouchLatency', 'MeanCorrectLeftTouchLatency',
+    'MeanCorrectLeftRightTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Initial Touch data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by trials, time and remove duplicates
     df = df.sort_values(by=['End Summary - Trials Completed (1)', 'End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
@@ -352,16 +453,14 @@ def punish_incorrect(df, script_location):
                  'MeanCorrectLeftRightTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day']
 
     df_final = pd.DataFrame(columns=col_names)
+
+    # extract the necessary data from raw data
     try:
-        # get the date for each row
         df_final['Date'] = df.iloc[:, date_header[0]]
-        # get the animal id for each row
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
-        # get the session time for each row
         df_final['SessionLength'] = df.iloc[:, session_length_header[0]]
         df_final['NumberOfTrial'] = df.iloc[:, trial_completed_header[0]]
         df_final['PercentCorrect'] = df.iloc[:, percent_correct_headers[0]]
-        # get the iti touches for each row
         df_final['TotalITITouches'] = df.iloc[:, iti_blank_header[0]]
         df_final['MeanCorrectTouchLatency'] = df.iloc[:, mean_correct_touch_header].mean(axis=1)
         df_final['MeanCorrectRightTouchLatency'] = df.iloc[:, mean_correct_right_touch].mean(axis=1)
@@ -374,7 +473,9 @@ def punish_incorrect(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print(
+            'punish_incorrect() error: Either you selected the wrong type of test '
+            'or headers are not the same on all files!')
         return
 
     print('The program is almost done running... Please wait....')
@@ -382,19 +483,34 @@ def punish_incorrect(df, script_location):
 
 
 def ld(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the LD Train/LD Probe test. The resulting
+    dataframe will have the following headers: 'Date', 'ID', 'Type', 'SessionLength', 'NumberOfTrial', 'PercentCorrect',
+    'NumberOfReversal', 'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency',
+    'MeanCorrectTouchLatency', 'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
+    'SessionLengthTo2ndReversalDuration', 'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal',
+    'PercentCorrectTo1stReversal', 'PercentCorrectTo2ndReversal', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Initial Touch data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by trials, time and remove duplicates
     df = df.sort_values(by=['End Summary - Trials Completed (1)', 'End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     number_correct_header = index_range('Trial Analysis - No. Correct (', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
@@ -429,6 +545,7 @@ def ld(df, script_location):
 
     df_final = pd.DataFrame(columns=col_names)
 
+    # extract the necessary data from raw data
     try:
         df_final['Date'] = df.iloc[:, date_header[0]]
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
@@ -469,7 +586,7 @@ def ld(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print('ld() error: Either you selected the wrong type of test or headers are not the same on all files!')
         return
 
     print('The program is almost done running... Please wait....')
@@ -478,9 +595,22 @@ def ld(df, script_location):
 
 
 def acquisition(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the Acquisition test. The resulting dataframe will have
+    the following headers: 'Date', 'ID', 'SessionLength', 'Corrects', 'BlankTouches', 'TotalITITouches',
+    'MeanCorrectTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardTouchLatency', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Initial Touch data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by corrects and time, remove duplicates
     df = df.sort_values(by=['End Summary - Corrects (1)', 'End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
@@ -491,6 +621,7 @@ def acquisition(df, script_location):
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
@@ -509,6 +640,8 @@ def acquisition(df, script_location):
                  'MeanCorrectTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardTouchLatency', 'Day']
 
     df_final = pd.DataFrame(columns=col_names)
+
+    # extract the necessary data from raw data
     try:
         df_final['Date'] = df.iloc[:, date_header[0]]
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
@@ -523,7 +656,7 @@ def acquisition(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        print('Acq() error: Either you selected the wrong type of test or headers are not the same on all files!')
         return
     print('The program is almost done running... Please wait....')
 
@@ -531,19 +664,32 @@ def acquisition(df, script_location):
 
 
 def extinction(df, script_location):
-    # creates the merged_file in the same folder as this script, use to help double check deleted duplicates
+    """
+    This function is used to specifically get cleaned data for the Extinction test. The resulting dataframe will have
+    the following headers: 'Date', 'ID', 'SessionLength', 'Responses', 'Omissions', 'TotalITITouches',
+    'MeanResponseTouchLatency', 'MeanBlankTouchLatency', 'MeanTrayEntryLatency', 'Day'
+
+    :param df: The dataframe that represents the raw ABET file
+    :param script_location: The location where the script is located.
+    :return: A dataframe with all the Initial Touch data and proper headers.
+    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
+    running the function on the correct files, then maybe the headers for all the files are not identical!
+    """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
+
+    # sort by responses and time, remove duplicates
     df = df.sort_values(by=['End Summary - Responses (1)', 'End Summary - Condition (1)'])
     df = remove_duplicates(df, script_location)
 
-    # all the headers in the raw data file
     raw_data_headers = df.columns.values.tolist()
 
     # basically want to replace '-' with NaN values in this specific range
     all_numeric_values = [*range(13, len(raw_data_headers), 1)]
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
+    # get the column indices for specific parameters
     date_header = index_range('Schedule run date', raw_data_headers, df)
     animal_id_header = index_range('Animal ID', raw_data_headers, df)
     session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
@@ -563,6 +709,8 @@ def extinction(df, script_location):
                  'MeanResponseTouchLatency', 'MeanBlankTouchLatency', 'MeanTrayEntryLatency', 'Day']
 
     df_final = pd.DataFrame(columns=col_names)
+
+    # extract the necessary data from raw data
     try:
         df_final['Date'] = df.iloc[:, date_header[0]]
         df_final['ID'] = df.iloc[:, animal_id_header[0]]
@@ -586,84 +734,133 @@ def extinction(df, script_location):
 
 
 def data_setup(test_type):
+    """
+    This functions prompts the user for the location of the raw data. It will read the raw data files and create a
+    dataframe. Depending on the test type, the function will clean the data and return the appropriate cleaned dataframe,
+    which will then be made into a csv to be saved.
+
+    :param test_type: The type of test that the animal ran, listed under schedule type
+    :return: A cleaned dataframe with the proper parameters based on the test type.
+    :except IndexError: If there are no csv files in the directory, then the function will stop and print the error
+    :except (IndexError, ValueError, KeyError, AttributeError):  Running this function on the wrong test will cause an
+    error! If you're running the function on the correct files, then maybe the headers for all the files are not
+    identical!
+    """
+
     print('Please open the directory that has all the raw data csv files')
     file_path = filedialog.askdirectory(title='Open the directory with csv files')
+
     if len(file_path) == 0:
         print('The cancel button was clicked! Please try again!')
         return
 
     # passes the folder directory and compiles all the csv files into ONE csv file
-
     pattern = os.path.join(file_path, '*.csv')
     files = glob.glob(pattern)
 
-    # original_location = os.getcwd()
     script_location = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_location)
 
     try:
-        try:
-            df = pd.read_csv(files[0], encoding='utf-8', delimiter=',', error_bad_lines=False)
-        except IndexError:
-            print('Either the directory is empty or does not contain any .csv files!')
-            return
-        # append all the other csv files onto the current dataframe
-        for file in files[1:len(files)]:
-            if not file.startswith('.'):
-                df_csv = pd.read_csv(file, index_col=False, encoding='utf-8', delimiter=',')
-                df = df.append(df_csv)
+        df = pd.read_csv(files[0], encoding='utf-8', delimiter=',', error_bad_lines=False)
+    except IndexError:
+        print('data_setup() error: Either the directory is empty or does not contain any .csv files!')
+        return
+    # append all the other csv files onto the current dataframe
+    for file in files[1:len(files)]:
+        if not file.startswith('.'):
+            df_csv = pd.read_csv(file, index_col=False, encoding='utf-8', delimiter=',')
+            df = df.append(df_csv)
 
-        if test_type == 'Hab1':
+    if test_type == 'Hab1':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD Habituation 1')
             df_hab_one = habituation_one(df_specific, script_location)
             return df_hab_one
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with Hab 1 in setup.py!')
+            return
 
-        if test_type == 'Hab2':
+    if test_type == 'Hab2':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD Habituation 2')
             df_hab_two = habituation_two(df_specific, script_location)
             return df_hab_two
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with Hab 2 in setup.py!')
+            return
 
-        if test_type == 'IT':
+    if test_type == 'IT':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD Initial Touch Training v2')
             df_initial_touch = initial_touch(df_specific, script_location)
             return df_initial_touch
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with IT in setup.py!')
+            return
 
-        if test_type == 'MT':
+    if test_type == 'MT':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD Must Touch Training v2')
             df_must_touch = must_touch_initiate(df_specific, script_location)
             return df_must_touch
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with MT in setup.py!')
+            return
 
-        if test_type == 'MI':
+    if test_type == 'MI':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD Must Initiate Training v2')
             df_must_initiate = must_touch_initiate(df_specific, script_location)
             return df_must_initiate
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with MI in setup.py!')
+            return
 
-        if test_type == 'PI':
+    if test_type == 'PI':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD Punish Incorrect Training v2')
             df_punish_incorrect = punish_incorrect(df_specific, script_location)
             return df_punish_incorrect
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with PI in setup.py!')
+            return
 
-        if test_type == 'LD Train' or test_type == 'LD Probe':
+    if test_type == 'LD Train' or test_type == 'LD Probe':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse LD 1 choice reversal v3')
             df_ld = ld(df_specific, script_location)
             return df_ld
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with LD Train/LD Probe in setup.py!')
+            return
 
-        if test_type == 'Acq':
+    if test_type == 'Acq':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse Extinction pt 1 v2')
             df_acq = acquisition(df_specific, script_location)
             return df_acq
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with Acq in setup.py!')
+            return
 
-        if test_type == 'Ext':
+    if test_type == 'Ext':
+        try:
             df_specific = specific_schedule_name(df, 'Mouse Extinction pt 2 v2')
             df_ext = extinction(df_specific, script_location)
             return df_ext
-    except PermissionError:
-        print(
-            'You may have closed the window asking for a directory! Or there are no .csv files in this directory!')
-        return
+        except (IndexError, ValueError, KeyError, AttributeError):
+            print('data_setup() error: There is an issue with Ext in setup.py!')
+            return
 
 
 def save_file_message(df):
+    """
+    This functions prompts the user to save the cleaned dataframe as a csv file. The default save type is .csv and
+    cannot be changed!
+    :param df: The cleaned dataframe ready to be converted into csv file.
+    :except FileNotFoundError: This will occur when you close the save window before saving!
+    """
     try:
         print('A window has opened asking for you to save your newly created csv file. Please look for it!')
         save_file_path = filedialog.asksaveasfilename(defaultextension='.csv', title='Save the file')
@@ -671,5 +868,6 @@ def save_file_message(df):
         print('A .csv file has been created. Please look at it in the saved directory!')
         print('\n')
     except FileNotFoundError:
-        print('You closed the window before saving! Please run the program again!')
+        print('save_file_message() error: You closed the window before saving! Please run the program again!')
         print('\n')
+        return

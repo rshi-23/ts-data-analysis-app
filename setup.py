@@ -136,16 +136,16 @@ def habituation_one(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    reward_ir_beam = index_range('End Summary - Reward IR Beam broken (1)', raw_data_headers, df)
-    screen_ir_beam = index_range('End Summary - Screen IR Beam broken (1)', raw_data_headers, df)
-    reward_to_screen = index_range('End Summary - Crossed reward to screen (1)', raw_data_headers, df)
-    screen_to_reward = index_range('End Summary - Crossed Screen to reward (1)', raw_data_headers, df)
-    bottom_window_touches = index_range('End Summary - Touches to bottom screen windows (1)', raw_data_headers, df)
-    top_window_touches = index_range('End Summary - Touches to top screen windows (1)', raw_data_headers, df)
-    tray_entered_count = index_range('End Summary - Tray Entered - Cnt (1)', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    reward_ir_beam = index_range('End Summary - Reward IR Beam broken (1)', raw_data_headers)
+    screen_ir_beam = index_range('End Summary - Screen IR Beam broken (1)', raw_data_headers)
+    reward_to_screen = index_range('End Summary - Crossed reward to screen (1)', raw_data_headers)
+    screen_to_reward = index_range('End Summary - Crossed Screen to reward (1)', raw_data_headers)
+    bottom_window_touches = index_range('End Summary - Touches to bottom screen windows (1)', raw_data_headers)
+    top_window_touches = index_range('End Summary - Touches to top screen windows (1)', raw_data_headers)
+    tray_entered_count = index_range('End Summary - Tray Entered - Cnt (1)', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -207,19 +207,19 @@ def habituation_two(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    total_trials = index_range('End Summary - Trial Completed (1)', raw_data_headers, df)
-    reward_ir_beam = index_range('End Summary - Reward IR Breaks - Reward Beam Cnt (1)', raw_data_headers, df)
-    screen_ir_beam = index_range('End Summary - Screen IR Breaks - Screen IR Cnt (1)', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    total_trials = index_range('End Summary - Trial Completed (1)', raw_data_headers)
+    reward_ir_beam = index_range('End Summary - Reward IR Breaks - Reward Beam Cnt (1)', raw_data_headers)
+    screen_ir_beam = index_range('End Summary - Screen IR Breaks - Screen IR Cnt (1)', raw_data_headers)
     bottom_left_window_touches = index_range('End Summary -  Bottom Left Touches - Bottom Left Cnt (1)',
-                                             raw_data_headers, df)
+                                             raw_data_headers)
     bottom_right_window_touches = index_range('End Summary - Bottom Right Touches - Bottom Right Cnt (1)',
-                                              raw_data_headers, df)
-    top_window_touches = index_range('End Summary -  Top Touches - Top Cnt (1)', raw_data_headers, df)
-    tray_entered_count = index_range('End Summary - Tray Entered - Cnt (1)', raw_data_headers, df)
-    mean_reward_collection_latency = index_range('Reward Collection Latency (', raw_data_headers, df)
+                                              raw_data_headers)
+    top_window_touches = index_range('End Summary -  Top Touches - Top Cnt (1)', raw_data_headers)
+    tray_entered_count = index_range('End Summary - Tray Entered - Cnt (1)', raw_data_headers)
+    mean_reward_collection_latency = index_range('Reward Collection Latency (', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -283,17 +283,17 @@ def initial_touch(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    images_touched = index_range('End Summary - No. images (1)', raw_data_headers, df)
-    correct_touches = index_range('End Summary - Corrects (1)', raw_data_headers, df)
-    blank_touches = index_range('End Summary - Blank Touches (1)', raw_data_headers, df)
-    total_iti_touches = index_range('End Summary - Left ITI Touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Right ITI Touches (1)', raw_data_headers, df)
-    mean_correct_touch_latency = index_range('Correct touch latency (', raw_data_headers, df)
-    mean_blank_touch_latency = index_range('Blank Touch Latency (', raw_data_headers, df)
-    mean_reward_collection_latency = index_range('Correct Reward Collection (', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    images_touched = index_range('End Summary - No. images (1)', raw_data_headers)
+    correct_touches = index_range('End Summary - Corrects (1)', raw_data_headers)
+    blank_touches = index_range('End Summary - Blank Touches (1)', raw_data_headers)
+    total_iti_touches = index_range('End Summary - Left ITI Touches (1)', raw_data_headers) + index_range(
+        'End Summary - Right ITI Touches (1)', raw_data_headers)
+    mean_correct_touch_latency = index_range('Correct touch latency (', raw_data_headers)
+    mean_blank_touch_latency = index_range('Blank Touch Latency (', raw_data_headers)
+    mean_reward_collection_latency = index_range('Correct Reward Collection (', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -355,19 +355,18 @@ def must_touch_initiate(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    correct_header = index_range('End Summary - Corrects (1)', raw_data_headers, df)
-    blank_touches_header = index_range('End Summary - Blank Touches (1)', raw_data_headers, df)
-    iti_blank_header = index_range('End Summary - Left ITI touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Right ITI touches (1)', raw_data_headers, df)
-    mean_correct_touch_header = index_range('Correct touch latency (', raw_data_headers,
-                                            df)
-    mean_correct_left_touch = index_range('Correct Left touch latency (', raw_data_headers, df)
-    mean_correct_right_touch = index_range('Correct Right touch latency (', raw_data_headers, df)
-    mean_blank_touch_header = index_range('Blank Touch Latency (', raw_data_headers, df)
-    mean_reward_header = index_range('Correct Reward Collection (', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    correct_header = index_range('End Summary - Corrects (1)', raw_data_headers)
+    blank_touches_header = index_range('End Summary - Blank Touches (1)', raw_data_headers)
+    iti_blank_header = index_range('End Summary - Left ITI touches (1)', raw_data_headers) + index_range(
+        'End Summary - Right ITI touches (1)', raw_data_headers)
+    mean_correct_touch_header = index_range('Correct touch latency (', raw_data_headers)
+    mean_correct_left_touch = index_range('Correct Left touch latency (', raw_data_headers)
+    mean_correct_right_touch = index_range('Correct Right touch latency (', raw_data_headers)
+    mean_blank_touch_header = index_range('Blank Touch Latency (', raw_data_headers)
+    mean_reward_header = index_range('Correct Reward Collection (', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -433,18 +432,18 @@ def punish_incorrect(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    trial_completed_header = index_range('End Summary - Trials Completed (1)', raw_data_headers, df)
-    percent_correct_headers = index_range('End Summary - % Correct (1)', raw_data_headers, df)
-    iti_blank_header = index_range('End Summary - Left ITI Touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Right ITI Touches (1)', raw_data_headers, df)
-    mean_correct_touch_header = index_range('Correct touch latency (', raw_data_headers, df)
-    mean_correct_left_touch = index_range('Correct Left touch latency (', raw_data_headers, df)
-    mean_correct_right_touch = index_range('Correct Right touch latency (', raw_data_headers, df)
-    mean_blank_touch_header = index_range('Blank Touch Latency (', raw_data_headers, df)
-    mean_reward_header = index_range('Correct Reward Collection (', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    trial_completed_header = index_range('End Summary - Trials Completed (1)', raw_data_headers)
+    percent_correct_headers = index_range('End Summary - % Correct (1)', raw_data_headers)
+    iti_blank_header = index_range('End Summary - Left ITI Touches (1)', raw_data_headers) + index_range(
+        'End Summary - Right ITI Touches (1)', raw_data_headers)
+    mean_correct_touch_header = index_range('Correct touch latency (', raw_data_headers)
+    mean_correct_left_touch = index_range('Correct Left touch latency (', raw_data_headers)
+    mean_correct_right_touch = index_range('Correct Right touch latency (', raw_data_headers)
+    mean_blank_touch_header = index_range('Blank Touch Latency (', raw_data_headers)
+    mean_reward_header = index_range('Correct Reward Collection (', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -511,29 +510,26 @@ def ld(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    number_correct_header = index_range('Trial Analysis - No. Correct (', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    correct_position_header = index_range('Trial Analysis - Correct Position (', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Session Time (1)', raw_data_headers, df)
-    trials_completed_header = index_range('End Summary - Trials Completed (1)', raw_data_headers, df)
-    percent_correct_header = index_range('End Summary - Percentage Correct (1)', raw_data_headers, df)
-    reversal_number_header = index_range('End Summary - Times Criteria reached (1)', raw_data_headers, df)
-    iti_blank_header = index_range('End Summary - Left ITI touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Right ITI touches (1)', raw_data_headers, df)
-    blank_header = index_range('End Summary - Left Blank Touches - Generic Counter (1)', raw_data_headers, df) + \
-                   index_range('End Summary - Right Blank Touches - Generic Counter (1)', raw_data_headers, df) + \
-                   index_range('End Summary - Top row touches - Generic Counter (1)', raw_data_headers, df)
-    mean_reward_header = index_range('Trial Analysis - Reward Collection Latency (', raw_data_headers, df)
-    mean_correct_touch_header = index_range('Trial Analysis - Correct Image Response Latency (', raw_data_headers,
-                                            df)
-    mean_incorrect_header = index_range('Trial Analysis - Incorrect Image Latency (', raw_data_headers, df)
-    first_reversal_time_header = index_range('No trials to criterion - Condition (1)', raw_data_headers, df)
-    second_reversal_time_header = index_range('No trials to criterion - Condition (2)', raw_data_headers, df)
-    first_reversal_trials_header = index_range('No trials to criterion - Generic Evaluation (1)', raw_data_headers,
-                                               df)
-    second_reversal_trials_header = index_range('No trials to criterion - Generic Evaluation (2)', raw_data_headers,
-                                                df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    number_correct_header = index_range('Trial Analysis - No. Correct (', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    correct_position_header = index_range('Trial Analysis - Correct Position (', raw_data_headers)
+    session_length_header = index_range('End Summary - Session Time (1)', raw_data_headers)
+    trials_completed_header = index_range('End Summary - Trials Completed (1)', raw_data_headers)
+    percent_correct_header = index_range('End Summary - Percentage Correct (1)', raw_data_headers)
+    reversal_number_header = index_range('End Summary - Times Criteria reached (1)', raw_data_headers)
+    iti_blank_header = index_range('End Summary - Left ITI touches (1)', raw_data_headers) + index_range(
+        'End Summary - Right ITI touches (1)', raw_data_headers)
+    blank_header = index_range('End Summary - Left Blank Touches - Generic Counter (1)', raw_data_headers) + \
+                   index_range('End Summary - Right Blank Touches - Generic Counter (1)', raw_data_headers) + \
+                   index_range('End Summary - Top row touches - Generic Counter (1)', raw_data_headers)
+    mean_reward_header = index_range('Trial Analysis - Reward Collection Latency (', raw_data_headers)
+    mean_correct_touch_header = index_range('Trial Analysis - Correct Image Response Latency (', raw_data_headers)
+    mean_incorrect_header = index_range('Trial Analysis - Incorrect Image Latency (', raw_data_headers)
+    first_reversal_time_header = index_range('No trials to criterion - Condition (1)', raw_data_headers)
+    second_reversal_time_header = index_range('No trials to criterion - Condition (2)', raw_data_headers)
+    first_reversal_trials_header = index_range('No trials to criterion - Generic Evaluation (1)', raw_data_headers)
+    second_reversal_trials_header = index_range('No trials to criterion - Generic Evaluation (2)', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -569,7 +565,7 @@ def ld(df, script_location):
         df_final['NumberOfTrialTo1stReversal'] = df.iloc[:, first_reversal_trials_header[0]]
         df_final['NumberOfTrialTo2ndReversal'] = df.iloc[:, second_reversal_trials_header[0]]
 
-        get_missing_reversal_trials(df_final, col_names)
+        get_missing_reversal_trials(df_final)
         get_fixed_session_time(df_final, df)
 
         number_correct_column_names = get_header_names(raw_data_headers, number_correct_header)
@@ -622,17 +618,17 @@ def acquisition(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    correct_header = index_range('End Summary - Corrects (1)', raw_data_headers, df)
-    blank_touches_header = index_range('End Summary - Blank Touches (1)', raw_data_headers, df)
-    iti_blank_header = index_range('End Summary - Left ITI Touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Right ITI Touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Centre ITI Touches (1)', raw_data_headers, df)
-    correct_touch_latency_header = index_range('Correct touch latency (', raw_data_headers, df)
-    blank_touch_latency_header = index_range('Blank Touch Latency (', raw_data_headers, df)
-    correct_reward_collect_header = index_range('Correct Reward Collection (', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    correct_header = index_range('End Summary - Corrects (1)', raw_data_headers)
+    blank_touches_header = index_range('End Summary - Blank Touches (1)', raw_data_headers)
+    iti_blank_header = index_range('End Summary - Left ITI Touches (1)', raw_data_headers) + index_range(
+        'End Summary - Right ITI Touches (1)', raw_data_headers) + index_range(
+        'End Summary - Centre ITI Touches (1)', raw_data_headers)
+    correct_touch_latency_header = index_range('Correct touch latency (', raw_data_headers)
+    blank_touch_latency_header = index_range('Blank Touch Latency (', raw_data_headers)
+    correct_reward_collect_header = index_range('Correct Reward Collection (', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -690,18 +686,17 @@ def extinction(df, script_location):
     df = convert_to_int(all_numeric_values, raw_data_headers, df)
 
     # get the column indices for specific parameters
-    date_header = index_range('Schedule run date', raw_data_headers, df)
-    animal_id_header = index_range('Animal ID', raw_data_headers, df)
-    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers, df)
-    responses_header = index_range('End Summary - Responses (1)', raw_data_headers, df)
-    omissions_header = index_range('End Summary - Omissions (1)', raw_data_headers, df)
-    mean_response_touch_header = index_range('Response touch latency ', raw_data_headers,
-                                             df)
-    mean_blank_touch_header = index_range('Blank Touch Latency (', raw_data_headers, df)
-    mean_tray_entry_latency = index_range('Tray Entry Latency (', raw_data_headers, df)
-    iti_blank_header = index_range('End Summary - Left ITI Touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Right ITI Touches (1)', raw_data_headers, df) + index_range(
-        'End Summary - Centre ITI Touches (1)', raw_data_headers, df)
+    date_header = index_range('Schedule run date', raw_data_headers)
+    animal_id_header = index_range('Animal ID', raw_data_headers)
+    session_length_header = index_range('End Summary - Condition (1)', raw_data_headers)
+    responses_header = index_range('End Summary - Responses (1)', raw_data_headers)
+    omissions_header = index_range('End Summary - Omissions (1)', raw_data_headers)
+    mean_response_touch_header = index_range('Response touch latency ', raw_data_headers)
+    mean_blank_touch_header = index_range('Blank Touch Latency (', raw_data_headers)
+    mean_tray_entry_latency = index_range('Tray Entry Latency (', raw_data_headers)
+    iti_blank_header = index_range('End Summary - Left ITI Touches (1)', raw_data_headers) + index_range(
+        'End Summary - Right ITI Touches (1)', raw_data_headers) + index_range(
+        'End Summary - Centre ITI Touches (1)', raw_data_headers)
 
     print('The program is still running... Please wait....')
 
@@ -736,7 +731,7 @@ def extinction(df, script_location):
 def data_setup(test_type):
     """
     This functions prompts the user for the location of the raw data. It will read the raw data files and create a
-    dataframe. Depending on the test type, the function will clean the data and return the appropriate cleaned dataframe,
+    dataframe. Depending on the test type, the function will clean the data and return the appropriate cleaned dataframe
     which will then be made into a csv to be saved.
 
     :param test_type: The type of test that the animal ran, listed under schedule type
@@ -778,7 +773,8 @@ def data_setup(test_type):
             df_hab_one = habituation_one(df_specific, script_location)
             return df_hab_one
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with Hab 1 in setup.py!')
+            print('data_setup() error: There is an issue with Hab 1 in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'Hab2':
@@ -787,7 +783,8 @@ def data_setup(test_type):
             df_hab_two = habituation_two(df_specific, script_location)
             return df_hab_two
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with Hab 2 in setup.py!')
+            print('data_setup() error: There is an issue with Hab 2 in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'IT':
@@ -796,7 +793,8 @@ def data_setup(test_type):
             df_initial_touch = initial_touch(df_specific, script_location)
             return df_initial_touch
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with IT in setup.py!')
+            print('data_setup() error: There is an issue with IT in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'MT':
@@ -805,7 +803,8 @@ def data_setup(test_type):
             df_must_touch = must_touch_initiate(df_specific, script_location)
             return df_must_touch
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with MT in setup.py!')
+            print('data_setup() error: There is an issue with MT in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'MI':
@@ -814,7 +813,8 @@ def data_setup(test_type):
             df_must_initiate = must_touch_initiate(df_specific, script_location)
             return df_must_initiate
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with MI in setup.py!')
+            print('data_setup() error: There is an issue with MI in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'PI':
@@ -823,7 +823,8 @@ def data_setup(test_type):
             df_punish_incorrect = punish_incorrect(df_specific, script_location)
             return df_punish_incorrect
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with PI in setup.py!')
+            print('data_setup() error: There is an issue with PI in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'LD Train' or test_type == 'LD Probe':
@@ -832,7 +833,8 @@ def data_setup(test_type):
             df_ld = ld(df_specific, script_location)
             return df_ld
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with LD Train/LD Probe in setup.py!')
+            print('data_setup() error: There is an issue with LD Train/LD Probe in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'Acq':
@@ -841,7 +843,8 @@ def data_setup(test_type):
             df_acq = acquisition(df_specific, script_location)
             return df_acq
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with Acq in setup.py!')
+            print('data_setup() error: There is an issue with Acq in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
     if test_type == 'Ext':
@@ -850,7 +853,8 @@ def data_setup(test_type):
             df_ext = extinction(df_specific, script_location)
             return df_ext
         except (IndexError, ValueError, KeyError, AttributeError):
-            print('data_setup() error: There is an issue with Ext in setup.py!')
+            print('data_setup() error: There is an issue with Ext in setup.py!'
+                  'Make sure you selected the right raw data folder!')
             return
 
 

@@ -166,13 +166,13 @@ def ld_probe_block_average(block_number):
         save_file_message(new_df)
 
 
-def ld_probe_id_average(animal_id):
+def ld_probe_id_average(animal_id, difficulty_type):
     print('You have selected the LD Probe(Select ID Avg) button!')
     df = data_setup('LD Probe')
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         selected_id = int(animal_id.get())
-        df = df.loc[df['ID'] == selected_id]
+        df = df.loc[(df['ID'] == selected_id) & (df['Type'] == difficulty_type)]
 
         df.sort_values(['ID', 'Day'], ascending=[1, 1], inplace=True)
         df.reset_index(drop=True, inplace=True)
@@ -185,8 +185,59 @@ def ld_probe_id_average(animal_id):
                      'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal', 'PercentCorrectTo1stReversal',
                      'PercentCorrectTo2ndReversal']
 
-        new_df = averaging_process(df)
+        avg_col = ['SessionLength', 'NumberOfTrial', 'PercentCorrect',
+                   'NumberOfReversal',
+                   'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
+                   'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
+                   'SessionLengthTo2ndReversalDuration',
+                   'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal', 'PercentCorrectTo1stReversal',
+                   'PercentCorrectTo2ndReversal']
+
+        new_df = df.copy(deep=True)
         new_df = new_df[col_names]
+
+        for col in avg_col:
+            new_df['Avg' + col] = df[col].mean(axis=0)
+            new_df.drop(col, axis=1, inplace=True)
+
+        new_df.drop_duplicates(subset='ID', keep='last', inplace=True)
+
+        save_file_message(new_df)
+
+
+def ld_probe_type_average(difficulty_type):
+    print('You have selected the LD Probe(Select ID Avg) button!')
+    df = data_setup('LD Probe')
+    if df is not None:
+        ld_probe_delete_other_difficulties(df)
+        df = df.loc[(df['Type'] == difficulty_type)]
+
+        df.sort_values(['ID', 'Day'], ascending=[1, 1], inplace=True)
+        df.reset_index(drop=True, inplace=True)
+
+        col_names = ['ID', 'SessionLength', 'NumberOfTrial', 'PercentCorrect',
+                     'NumberOfReversal',
+                     'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
+                     'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
+                     'SessionLengthTo2ndReversalDuration',
+                     'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal', 'PercentCorrectTo1stReversal',
+                     'PercentCorrectTo2ndReversal']
+
+        avg_col = ['SessionLength', 'NumberOfTrial', 'PercentCorrect',
+                   'NumberOfReversal',
+                   'TotalITITouches', 'TotalBlankTouches', 'MeanRewardCollectionLatency', 'MeanCorrectTouchLatency',
+                   'MeanIncorrectTouchLatency', 'SessionLengthTo1stReversalDuration',
+                   'SessionLengthTo2ndReversalDuration',
+                   'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal', 'PercentCorrectTo1stReversal',
+                   'PercentCorrectTo2ndReversal']
+
+        new_df = pd.DataFrame(columns=col_names)
+        df.reset_index(drop=True, inplace=True)
+        for col in avg_col:
+            new_df[col] = df.groupby('ID')[col].mean()
+
+        new_df['ID'] = df['ID'].unique()
+
         save_file_message(new_df)
 
 
@@ -236,6 +287,23 @@ def make_ld_probe_buttons(tk, root):
     ld_probe_button_id_avg_text = tk.Entry(root, width=30, justify='center')
     ld_probe_button_id_avg_text.grid(row=7, column=1)
 
-    ld_probe_button_id_avg = tk.Button(root, text='LD Probe (ID Avg)',
-                                       command=lambda: ld_probe_id_average(ld_probe_button_id_avg_text), width=30)
+    ld_probe_button_id_avg = tk.Button(root, text='LD Probe (ID Avg Easy)',
+                                       command=lambda: ld_probe_id_average(ld_probe_button_id_avg_text, 'easy'),
+                                       width=30)
     ld_probe_button_id_avg.grid(row=7, column=0)
+
+    ld_probe_button_id_avg_text_two = tk.Entry(root, width=30, justify='center')
+    ld_probe_button_id_avg_text_two.grid(row=8, column=1)
+
+    ld_probe_button_id_avg_two = tk.Button(root, text='LD Probe (ID Avg Hard)',
+                                           command=lambda: ld_probe_id_average(ld_probe_button_id_avg_text, 'hard'),
+                                           width=30)
+    ld_probe_button_id_avg_two.grid(row=8, column=0)
+    ld_probe_button_avg_easy = tk.Button(root, text='LD Probe (Avg Easy)',
+                                         command=lambda: ld_probe_type_average('easy'),
+                                         width=30)
+    ld_probe_button_avg_easy.grid(row=9, column=0)
+    ld_probe_button_avg_hard = tk.Button(root, text='LD Probe (Avg Hard)',
+                                         command=lambda: ld_probe_type_average('hard'),
+                                         width=30)
+    ld_probe_button_avg_hard.grid(row=10, column=0)

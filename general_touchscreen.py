@@ -323,6 +323,7 @@ def pi_select_day_button(min_trials, percent_one, percent_two, enter_day):
     :param min_trials: An entry with the value that represents the minimum required trials to pass the criteria (int)
     :param percent_one: An entry with the value that represents the minimum percent correctness for the first day (int)
     :param percent_two: An entry with the value that represents the minimum percent correctness for the second day (int)
+    :param enter_day: A widget that contains the value that represents the selected day.
     """
 
     # check that the inputs to the criteria widgets are valid
@@ -354,6 +355,7 @@ def pi_select_id_button(min_trials, percent_one, percent_two, enter_id):
     :param min_trials: An entry with the value that represents the minimum required trials to pass the criteria (int)
     :param percent_one: An entry with the value that represents the minimum percent correctness for the first day (int)
     :param percent_two: An entry with the value that represents the minimum percent correctness for the second day (int)
+    :param enter_id: A widget that contains the value that represents the selected id.
     """
 
     # check that the inputs to the criteria widgets are valid

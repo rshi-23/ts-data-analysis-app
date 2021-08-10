@@ -8,7 +8,7 @@ def get_header_names(raw_data_headers, header_index_range):
 
     :param raw_data_headers: A list of all the column names from raw data
     :param header_index_range: A list of indices for a specific parameter
-    :return: A list of header names that correspond to the header_index_range list
+    :return: header_names_list: A list of header names that correspond to the header_index_range list
     """
 
     header_names_list = list()
@@ -25,7 +25,7 @@ def convert_to_int(header_index_range, raw_data_headers, dataframe):
     :param header_index_range: A list of indices for specific parameters
     :param raw_data_headers: A list of all the column names from raw data
     :param dataframe: A dataframe with columns that need to be converted from strings to numerics
-    :return: A dataframe with a specific section converted from strings to numerics
+    :return: dataframe: A dataframe with a specific section converted from strings to numerics
     """
 
     # replace NaNs and - (no values/blank spaces) with a very large placeholder number
@@ -48,9 +48,11 @@ def index_range(keyword, header_list):
     """
     This function takes in a keyword and a list of column header names and creates a list of indices that contains the
     specified keyword.
+
     :param keyword: A header or part of a header that you are interested in.
     :param header_list: A list of column header names from raw data.
-    :return: A list of indices that correspond to where the specific keyword shows up in the raw data column header list
+    :return: index_list: A list of indices that correspond to where the specific keyword shows up in the raw data column
+    header list
     """
 
     index_list = list()

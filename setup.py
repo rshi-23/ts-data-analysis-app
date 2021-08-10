@@ -11,13 +11,16 @@ pd.options.mode.chained_assignment = 'raise'
 def specific_schedule_name(df, schedule_name):
     """
     This function returns a new df with specific animal schedule type, removes the timestamp from the schedule date, and
-    sorts the df by run date and ID in ascending order
+    sorts the df by run date and ID in ascending order.
+
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param schedule_name: The name of the test the mouse ran, found under the schedule name in raw data
-    :return: A dataframe that only contains rows for animals that performed the specific schedule name, sorted in
+    :returns: df: A dataframe that only contains rows for animals that performed the specific schedule name, sorted in
     ascending order by run date and ID
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
     """
 
     try:
@@ -32,18 +35,19 @@ def specific_schedule_name(df, schedule_name):
     except (IndexError, KeyError, ValueError):
         print('specific_schedule_name() error: either you have selected the wrong type of test',
               'or the headers are not the same for all files!')
-        return
 
 
 def create_merge_file(df, script_location):
     """
     This function creates a csv file called 'merged_file.csv'. This file appends all the raw files together and puts
     them on a single csv file. Useful for testing or just looking at all the data in one file.
+
+    If the merged_file.csv' is already open, it will not update and this function will return and stop.
+
+    If you run this on non-raw data files,this function will return and stop.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located and used to store this file there as well
-    :except PermissionError: If the merged_file.csv' is already open, it will not update and this function will return
-    and stop.
-    :except AttributeError: If you run this on non-raw data files,this function will return and stop.
     """
 
     try:
@@ -53,10 +57,8 @@ def create_merge_file(df, script_location):
             script_location)
     except PermissionError:
         print('create_merge_file() error: You may have the "merged_file.csv" already open! Please close it!')
-        return
     except AttributeError:
         print('create_merge_file() error: These are not the correct raw data files!')
-        return
 
 
 def create_dropped_duplicates_file(df, script_location):
@@ -64,11 +66,13 @@ def create_dropped_duplicates_file(df, script_location):
     This function creates a csv file called 'dropped_duplicates.csv'. This file shows all the rows that were treated as
     duplicates and removed from the working dataframe. Useful for testing and making sure the correct
     duplicates/unwanted were removed from the working dataframe.
+
+    If the 'dropped_duplicates.csv' is already open, it will not update and this function will return and stop.
+
+    If you run this on non-raw data files,this function will return and stop.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located and used to store this file there as well
-    :except PermissionError: If the 'dropped_duplicates.csv' is already open, it will not update and this function will
-    return and stop.
-    :except AttributeError: If you run this on non-raw data files,this function will return and stop.
     """
 
     try:
@@ -78,18 +82,17 @@ def create_dropped_duplicates_file(df, script_location):
     except PermissionError:
         print('create_dropped_duplicates_file() error: You may have the "merged_file.csv" already open!',
               'Please close it!')
-        return
     except AttributeError:
         print('create_dropped_duplicates_file() error: These are not the correct raw data files!')
-        return
 
 
 def remove_duplicates(df, script_location):
     """
     This function actually drops the duplicate rows from the working dataframe.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located and used to store this file there as well
-    :return: A version of the raw ABET file dataframe with the duplicates removed
+    :return: df: A version of the raw ABET file dataframe with the duplicates removed
     """
 
     # create a dataframe that holds the duplicates
@@ -115,11 +118,13 @@ def habituation_one(df, script_location):
     'CrossedRewardToScreen', 'CrossedScreenToReward', 'BottomWindowTouches', 'TopWindowTouches', 'TrayEnteredCount',
     'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Habituation 1 data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return:df_final: A dataframe with all the Habituation 1 data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -186,11 +191,13 @@ def habituation_two(df, script_location):
     'ScreenIRBeamBrokenCount', 'BottomLeftWindowTouches', 'BottomRightWindowTouches', 'TopWindowTouches',
     'TrayEnteredCount', 'MeanRewardCollectionLatency', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Habituation 2 data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Habituation 2 data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -250,7 +257,7 @@ def habituation_two(df, script_location):
         print(
             'habituation_two() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
-        return
+        return None
     print('The program is almost done running... Please wait....')
 
     return df_final
@@ -262,11 +269,13 @@ def initial_touch(df, script_location):
     the following headers: 'Date', 'ID', 'SessionLength', 'ImagesTouched', 'Corrects', 'BlankTouches','TotalITITouches',
     'MeanCorrectTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Initial Touch data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Initial Touch data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -321,7 +330,7 @@ def initial_touch(df, script_location):
         print(
             'initial_touch() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
-        return
+        return None
     print('The program is almost done running... Please wait....')
 
     return df_final
@@ -334,11 +343,13 @@ def must_touch_initiate(df, script_location):
     'TotalITITouches', 'MeanCorrectTouchLatency', 'MeanCorrectRightTouchLatency', 'MeanCorrectLeftTouchLatency',
     'MeanCorrectLeftRightTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Initial Touch data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Initial Touch data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -398,7 +409,7 @@ def must_touch_initiate(df, script_location):
         print(
             'must_touch_initiate() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
-        return
+        return None
     print('The program is almost done running... Please wait....')
 
     return df_final
@@ -411,11 +422,13 @@ def punish_incorrect(df, script_location):
     'MeanCorrectTouchLatency', 'MeanCorrectRightTouchLatency', 'MeanCorrectLeftTouchLatency',
     'MeanCorrectLeftRightTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardCollectionLatency', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Initial Touch data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Initial Touch data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -475,7 +488,7 @@ def punish_incorrect(df, script_location):
         print(
             'punish_incorrect() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
-        return
+        return None
 
     print('The program is almost done running... Please wait....')
     return df_final
@@ -490,12 +503,15 @@ def ld(df, script_location):
     'SessionLengthTo2ndReversalDuration', 'NumberOfTrialTo1stReversal', 'NumberOfTrialTo2ndReversal',
     'PercentCorrectTo1stReversal', 'PercentCorrectTo2ndReversal', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Initial Touch data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Initial Touch data and proper headers.
     """
+
     create_merge_file(df, script_location)
     print('The program is running... Please wait....')
 
@@ -583,7 +599,7 @@ def ld(df, script_location):
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
         print('ld() error: Either you selected the wrong type of test or headers are not the same on all files!')
-        return
+        return None
 
     print('The program is almost done running... Please wait....')
 
@@ -596,11 +612,13 @@ def acquisition(df, script_location):
     the following headers: 'Date', 'ID', 'SessionLength', 'Corrects', 'BlankTouches', 'TotalITITouches',
     'MeanCorrectTouchLatency', 'MeanBlankTouchLatency', 'MeanRewardTouchLatency', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Initial Touch data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Initial Touch data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -653,7 +671,7 @@ def acquisition(df, script_location):
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
         print('Acq() error: Either you selected the wrong type of test or headers are not the same on all files!')
-        return
+        return None
     print('The program is almost done running... Please wait....')
 
     return df_final
@@ -665,11 +683,13 @@ def extinction(df, script_location):
     the following headers: 'Date', 'ID', 'SessionLength', 'Responses', 'Omissions', 'TotalITITouches',
     'MeanResponseTouchLatency', 'MeanBlankTouchLatency', 'MeanTrayEntryLatency', 'Day'
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
     :param df: The dataframe that represents the raw ABET file
     :param script_location: The location where the script is located.
-    :return: A dataframe with all the Initial Touch data and proper headers.
-    :except (IndexError, KeyError, ValueError): Running this function on the wrong test will cause an error! If you're
-    running the function on the correct files, then maybe the headers for all the files are not identical!
+    :return: df_final: A dataframe with all the Initial Touch data and proper headers.
     """
 
     create_merge_file(df, script_location)
@@ -721,7 +741,7 @@ def extinction(df, script_location):
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
         print('Either you selected the wrong type of test or headers are not the same on all files!')
-        return
+        return None
 
     print('The program is almost done running... Please wait....')
 
@@ -734,12 +754,14 @@ def data_setup(test_type):
     dataframe. Depending on the test type, the function will clean the data and return the appropriate cleaned dataframe
     which will then be made into a csv to be saved.
 
+    Running this function on the wrong test will cause an error message!
+
+    If you're running the function on the correct files, then maybe the headers for all the files are not identical.
+
+    If there are no csv files in the directory, the function will print an error message and stop and return.
+
     :param test_type: The type of test that the animal ran, listed under schedule type
     :return: A cleaned dataframe with the proper parameters based on the test type.
-    :except IndexError: If there are no csv files in the directory, then the function will stop and print the error
-    :except (IndexError, ValueError, KeyError, AttributeError):  Running this function on the wrong test will cause an
-    error! If you're running the function on the correct files, then maybe the headers for all the files are not
-    identical!
     """
 
     print('Please open the directory that has all the raw data csv files')
@@ -775,7 +797,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with Hab 1 in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'Hab2':
         try:
@@ -785,7 +807,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with Hab 2 in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'IT':
         try:
@@ -795,7 +817,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with IT in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'MT':
         try:
@@ -805,7 +827,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with MT in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'MI':
         try:
@@ -815,7 +837,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with MI in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'PI':
         try:
@@ -825,7 +847,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with PI in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'LD Train' or test_type == 'LD Probe':
         try:
@@ -835,7 +857,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with LD Train/LD Probe in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'Acq':
         try:
@@ -845,7 +867,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with Acq in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
     if test_type == 'Ext':
         try:
@@ -855,7 +877,7 @@ def data_setup(test_type):
         except (IndexError, ValueError, KeyError, AttributeError):
             print('data_setup() error: There is an issue with Ext in setup.py!'
                   'Make sure you selected the right raw data folder!')
-            return
+            return None
 
 
 def save_file_message(df):

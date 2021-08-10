@@ -176,10 +176,15 @@ def button_ld_train_all(criteria, min_reversal_number):
         print('button_ld_train_all() error: One of the two criteria is empty or invalid!')
         return None
 
-    df = data_setup('LD Train')
-    if df is not None and ld_criteria_list_check(criteria_list) is not None:
-        ld_train_delete_other_difficulties(df)
+    if ld_criteria_list_check(criteria_list) is not None:
         criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+    else:
+        print('button_ld_train_all() error: One of the criteria is empty or invalid!')
+        return None
+
+    df = data_setup('LD Train')
+    if df is not None:
+        ld_train_delete_other_difficulties(df)
         get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
     else:
@@ -209,13 +214,18 @@ def button_ld_train_select_day(enter_day, criteria, min_reversal_number):
     if ld_train_criteria_min_rev_check(criteria, min_reversal_number) is not None:
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
-        print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
+        print('button_ld_train_select_day() error: One of the three criteria is empty or invalid!')
+        return None
+
+    if ld_criteria_list_check(criteria_list) is not None:
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+    else:
+        print('button_ld_train_select_day() error: One of the criteria is empty or invalid!')
         return None
 
     df = data_setup('LD Train')
-    if df is not None and ld_criteria_list_check(criteria_list) is not None:
+    if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
         get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         df = df.loc[df['Day'] == selected_day]
         save_file_message(df)
@@ -238,13 +248,18 @@ def button_ld_train_first_day(criteria, min_reversal_number):
     if ld_train_criteria_min_rev_check(criteria, min_reversal_number) is not None:
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
-        print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
+        print('button_ld_train_first_day() error: One of the three criteria is empty or invalid!')
+        return None
+
+    if ld_criteria_list_check(criteria_list) is not None:
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+    else:
+        print('button_ld_train_first_day() error: One of the criteria is empty or invalid!')
         return None
 
     df = data_setup('LD Train')
-    if df is not None and ld_criteria_list_check(criteria_list) is not None:
+    if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
         get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
     else:
@@ -267,13 +282,18 @@ def button_ld_train_last_day(criteria, min_reversal_number):
     if ld_train_criteria_min_rev_check(criteria, min_reversal_number) is not None:
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
-        print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
+        print('button_ld_train_last_day() error: One of the three criteria is empty or invalid!')
+        return None
+
+    if ld_criteria_list_check(criteria_list) is not None:
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+    else:
+        print('button_ld_train_last_day() error: One of the criteria is empty or invalid!')
         return None
 
     df = data_setup('LD Train')
-    if df is not None and ld_criteria_list_check(criteria_list) is not None:
+    if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
         get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
     else:
@@ -304,13 +324,18 @@ def button_ld_train_select_id(enter_id, criteria, min_reversal_number):
     if ld_train_criteria_min_rev_check(criteria, min_reversal_number) is not None:
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
-        print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
+        print('button_ld_train_select_id() error: One of the three criteria is empty or invalid!')
+        return None
+
+    if ld_criteria_list_check(criteria_list) is not None:
+        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
+    else:
+        print('button_ld_train_select_id() error: One of the criteria is empty or invalid!')
         return None
 
     df = data_setup('LD Train')
-    if df is not None and ld_criteria_list_check(criteria_list) is not None:
+    if df is not None:
         ld_train_delete_other_difficulties(df)
-        criteria_value, criteria_max_days = ld_criteria_list_check(criteria_list)
         get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         df = df.loc[df['ID'] == selected_id]
         save_file_message(df)

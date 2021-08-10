@@ -13,8 +13,8 @@ def get_ld_last_days(df, criteria, max_days, min_reversal_number):
     :param criteria: A value that represents how many days the minimum required reversal number must be met
     :param max_days: A value that represents how many days are allotted to meet the n/n+1 criteria
     :param min_reversal_number: A value that represents the minimum required reversal number for an animal
-    :return: A dataframe that only contains the rows that the animals met their criteria on. If an animal did not reach
-    the criteria, it will not show up.
+    :return: df_copy: A dataframe that only contains the rows that the animals met their criteria on. If an animal did
+    not reach the criteria, it will not show up.
     """
 
     df_copy = df.copy(deep=True)
@@ -129,14 +129,14 @@ def ld_train_criteria_min_rev_check(criteria, min_reversal_number):
         criteria_list = criteria.get().split('/')
     except ValueError:
         print('ld_train_criteria_min_rev_check() error: Criteria might be empty or invalid!')
-        return
+        return None
 
     try:
         min_rev = int(min_reversal_number.get())
     except ValueError:
         print('ld_train_criteria_min_rev_check() error: Minimum required reversal number might be empty'
               ' or is not numeric!')
-        return
+        return None
 
     return criteria_list, min_rev
 
@@ -155,7 +155,7 @@ def ld_criteria_list_check(criteria_list):
         return criteria_value, criteria_max_days
     except ValueError:
         print('ld_criteria_list_check() error: Criteria is either empty or invalid!')
-        return
+        return None
 
 
 def button_ld_train_all(criteria, min_reversal_number):
@@ -174,7 +174,7 @@ def button_ld_train_all(criteria, min_reversal_number):
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
         print('button_ld_train_all() error: One of the two criteria is empty or invalid!')
-        return
+        return None
 
     df = data_setup('LD Train')
     if df is not None and ld_criteria_list_check(criteria_list) is not None:
@@ -184,7 +184,7 @@ def button_ld_train_all(criteria, min_reversal_number):
         save_file_message(df)
     else:
         print('button_ld_train_all() error:  One of the criterias is invalid or you hit the cancel button!')
-        return
+        return None
 
 
 def button_ld_train_select_day(enter_day, criteria, min_reversal_number):
@@ -203,14 +203,14 @@ def button_ld_train_select_day(enter_day, criteria, min_reversal_number):
         selected_day = int(enter_day.get())
     except ValueError:
         print('button_ld_train_select_id() error: The select id value is empty or invalid!')
-        return
+        return None
 
     # check that the inputs to the criteria widgets are valid
     if ld_train_criteria_min_rev_check(criteria, min_reversal_number) is not None:
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
         print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
-        return
+        return None
 
     df = data_setup('LD Train')
     if df is not None and ld_criteria_list_check(criteria_list) is not None:
@@ -221,7 +221,7 @@ def button_ld_train_select_day(enter_day, criteria, min_reversal_number):
         save_file_message(df)
     else:
         print('button_ld_train_select_day() error: One of the criterias is invalid or you hit the cancel button!')
-        return
+        return None
 
 
 def button_ld_train_first_day(criteria, min_reversal_number):
@@ -239,7 +239,7 @@ def button_ld_train_first_day(criteria, min_reversal_number):
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
         print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
-        return
+        return None
 
     df = data_setup('LD Train')
     if df is not None and ld_criteria_list_check(criteria_list) is not None:
@@ -249,7 +249,7 @@ def button_ld_train_first_day(criteria, min_reversal_number):
         save_file_message(df)
     else:
         print('button_ld_train_first_day() error: One of the criterias is invalid or you hit the cancel button!')
-        return
+        return None
 
 
 def button_ld_train_last_day(criteria, min_reversal_number):
@@ -268,7 +268,7 @@ def button_ld_train_last_day(criteria, min_reversal_number):
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
         print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
-        return
+        return None
 
     df = data_setup('LD Train')
     if df is not None and ld_criteria_list_check(criteria_list) is not None:
@@ -278,7 +278,7 @@ def button_ld_train_last_day(criteria, min_reversal_number):
         save_file_message(df)
     else:
         print('button_ld_train_last_day() error: One of the criterias is invalid or you hit the cancel button!')
-        return
+        return None
 
 
 def button_ld_train_select_id(enter_id, criteria, min_reversal_number):
@@ -298,14 +298,14 @@ def button_ld_train_select_id(enter_id, criteria, min_reversal_number):
         selected_id = int(enter_id.get())
     except ValueError:
         print('button_ld_train_select_id() error: The select id value is empty or invalid!')
-        return
+        return None
 
     # check that the inputs to the criteria widgets are valid
     if ld_train_criteria_min_rev_check(criteria, min_reversal_number) is not None:
         criteria_list, min_rev = ld_train_criteria_min_rev_check(criteria, min_reversal_number)
     else:
         print('button_ld_train_all() error: One of the three criteria is empty or invalid!')
-        return
+        return None
 
     df = data_setup('LD Train')
     if df is not None and ld_criteria_list_check(criteria_list) is not None:
@@ -316,7 +316,7 @@ def button_ld_train_select_id(enter_id, criteria, min_reversal_number):
         save_file_message(df)
     else:
         print('button_ld_train_select_id() error: One of the criterias is invalid or you hit the cancel button!')
-        return
+        return None
 
 
 def make_ld_train_buttons(tk, root):

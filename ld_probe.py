@@ -58,6 +58,7 @@ def ld_probe_widget_check(widget):
     try:
         widget_value = int(widget.get())
     except ValueError:
+        mb.showerror('LD Probe Error', 'ld_probe_widget_check() error: The selected day/id is invalid or empty!')
         print('ld_probe_widget_check() error: The selected day/id is invalid or empty!')
         return None
 
@@ -76,6 +77,7 @@ def ld_probe_select_day(enter_day):
     if ld_probe_widget_check(enter_day) is not None:
         selected_day = ld_probe_widget_check(enter_day)
     else:
+        mb.showerror('LD Probe Error', 'ld_probe_select_id() error: The selected day criteria is empty or invalid!')
         print('ld_probe_select_id() error: The selected day criteria is empty or invalid!')
         return None
 
@@ -98,6 +100,7 @@ def ld_probe_select_id(enter_id):
     if ld_probe_widget_check(enter_id) is not None:
         selected_id = ld_probe_widget_check(enter_id)
     else:
+        mb.showerror('LD Probe Error', 'ld_probe_select_id() error: The selected id criteria is empty or invalid!')
         print('ld_probe_select_id() error: The selected id criteria is empty or invalid!')
         return None
 
@@ -122,6 +125,7 @@ def ld_probe_select_block(block_number):
     if ld_probe_widget_check(block_number) is not None:
         selected_block = ld_probe_widget_check(block_number)
     else:
+        mb.showerror('LD Probe Error', 'ld_probe_select_block() error: The block number criteria is empty or invalid!')
         print('ld_probe_select_block() error: The block number criteria is empty or invalid!')
         return None
 
@@ -231,6 +235,7 @@ def ld_probe_block_average(block_number):
     if ld_probe_widget_check(block_number) is not None:
         selected_block = ld_probe_widget_check(block_number)
     else:
+        mb.showerror('LD Probe Error', 'ld_probe_select_block() error: The block number criteria is empty or invalid!')
         print('ld_probe_select_block() error: The block number criteria is empty or invalid!')
         return None
 

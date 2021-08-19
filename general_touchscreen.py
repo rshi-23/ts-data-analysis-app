@@ -58,6 +58,8 @@ def check_enter_day(enter_day):
         selected_day = int(enter_day.get())
         return selected_day
     except ValueError:
+        mb.showerror('General Touchscreen Error',
+                     'check_enter_day() error: Either the value is empty or the value is not numeric!')
         print('check_enter_day() error: Either the value is empty or the value is not numeric!')
         return
 
@@ -75,6 +77,8 @@ def check_enter_id(enter_id):
         selected_id = int(enter_id.get())
         return selected_id
     except ValueError:
+        mb.showerror('General Touchscreen Error',
+                     'check_enter_id() error: Either the value is empty or the value is not numeric!')
         print('check_enter_id() error: Either the value is empty or the value is not numeric!')
         return
 
@@ -92,6 +96,8 @@ def get_general_ts_select_day(test_type, enter_day):
     # check that the inputs to the criteria widgets are valid
     selected_day = check_enter_day(enter_day)
     if selected_day is None:
+        mb.showerror('General Touchscreen Error',
+                     'get_general_ts_select_day() error: Either the day value is empty or the value is not numeric!')
         print('get_general_ts_select_day() error: Either the day value is empty or the value is not numeric!')
         return
 
@@ -114,6 +120,8 @@ def get_general_ts_select_id(test_type, enter_id):
     # check that the inputs to the criteria widgets are valid
     selected_id = check_enter_id(enter_id)
     if selected_id is None:
+        mb.showerror('General Touchscreen Error',
+                     'get_general_ts_select_id() error: Either the id value is empty or the value is not numeric!')
         print('get_general_ts_select_id() error: Either the id value is empty or the value is not numeric!')
         return
 
@@ -225,18 +233,24 @@ def pi_widget_check(min_trials, percent_one, percent_two):
     try:
         minimum_trials = int(min_trials.get())
     except ValueError:
+        mb.showerror('General Touchscreen Error',
+                     'pi_widget_check() error: Either the trial value is empty of the value is not numeric!')
         print('pi_widget_check() error: Either the trial value is empty of the value is not numeric!')
         return
 
     try:
         correct_one = int(percent_one.get())
     except ValueError:
+        mb.showerror('General Touchscreen Error',
+                     'pi_widget_check() error: Either the percent correctness 1 is empty of the value is not numeric!')
         print('pi_widget_check() error: Either the percent correctness 1 is empty of the value is not numeric!')
         return
 
     try:
         correct_two = int(percent_two.get())
     except ValueError:
+        mb.showerror('General Touchscreen Error',
+                     'pi_widget_check() error: Either the percent correctness 2 is empty of the value is not numeric!')
         print('pi_widget_check() error: Either the percent correctness 2 is empty of the value is not numeric!')
         return
 
@@ -258,6 +272,8 @@ def pi_all_button(min_trials, percent_one, percent_two):
     if pi_widget_check(min_trials, percent_one, percent_two) is not None:
         minimum_trials, correct_one, correct_two = pi_widget_check(min_trials, percent_one, percent_two)
     else:
+        mb.showerror('General Touchscreen Error',
+                     'pi_all_button() error: One of the three criteria is either empty or non-numeric!')
         print('pi_all_button() error: One of the three criteria is either empty or non-numeric!')
         return
 
@@ -281,6 +297,8 @@ def pi_first_button(min_trials, percent_one, percent_two):
     if pi_widget_check(min_trials, percent_one, percent_two) is not None:
         minimum_trials, correct_one, correct_two = pi_widget_check(min_trials, percent_one, percent_two)
     else:
+        mb.showerror('General Touchscreen Error',
+                     'pi_first_button() error: One of the three criteria is either empty or non-numeric!')
         print('pi_first_button() error: One of the three criteria is either empty or non-numeric!')
         return
 
@@ -306,6 +324,8 @@ def pi_last_button(min_trials, percent_one, percent_two):
     if pi_widget_check(min_trials, percent_one, percent_two) is not None:
         minimum_trials, correct_one, correct_two = pi_widget_check(min_trials, percent_one, percent_two)
     else:
+        mb.showerror('General Touchscreen Error',
+                     'pi_last_button() error: One of the three criteria is either empty or non-numeric!')
         print('pi_last_button() error: One of the three criteria is either empty or non-numeric!')
         return
 
@@ -330,12 +350,16 @@ def pi_select_day_button(min_trials, percent_one, percent_two, enter_day):
     if pi_widget_check(min_trials, percent_one, percent_two) is not None:
         minimum_trials, correct_one, correct_two = pi_widget_check(min_trials, percent_one, percent_two)
     else:
+        mb.showerror('General Touchscreen Error',
+                     'pi_select_day_button() error: One of the three criteria is either empty or non-numeric!')
         print('pi_select_day_button() error: One of the three criteria is either empty or non-numeric!')
         return
 
     # check that the inputs to the criteria widgets are valid
     selected_day = check_enter_day(enter_day)
     if selected_day is None:
+        mb.showerror('General Touchscreen Error',
+                     'pi_select_day_button() error: One of the three criteria is either empty or non-numeric!')
         print('pi_select_day_button() error: Either the day value is empty or the value is not numeric!')
         return
 
@@ -362,12 +386,16 @@ def pi_select_id_button(min_trials, percent_one, percent_two, enter_id):
     if pi_widget_check(min_trials, percent_one, percent_two) is not None:
         minimum_trials, correct_one, correct_two = pi_widget_check(min_trials, percent_one, percent_two)
     else:
+        mb.showerror('General Touchscreen Error',
+                     'pi_select_id_button() error: One of the three criteria is either empty or non-numeric!')
         print('pi_select_id_button() error: One of the three criteria is either empty or non-numeric!')
         return
 
     # check that the inputs to the criteria widgets are valid
     selected_id = check_enter_id(enter_id)
     if selected_id is None:
+        mb.showerror('General Touchscreen Error',
+                     'pi_select_id_button() error: Either the id value is empty or the value is not numeric!')
         print('pi_select_id_button() error: Either the id value is empty or the value is not numeric!')
         return
 

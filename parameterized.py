@@ -74,6 +74,9 @@ def ld_probe_parameterized(df):
         writer_hard = pd.ExcelWriter('All Blocks Parameters Hard.xlsx', engine='xlsxwriter')
         print('A file called All Blocks Parameters Hard.xlsx has been created at:', script_location)
     except PermissionError:
+        mb.showerror('Parameterized Error',
+                     'ld_probe_parameterized() error: All Blocks Parameters Easy/Hard.xlsx might be open! '
+                     ' Please close it before proceeding!')
         print('ld_probe_parameterized() error: All Blocks Parameters Easy/Hard.xlsx might be open! '
               'Please close it before proceeding!')
         return None
@@ -120,6 +123,7 @@ def ld_train_parameterized(df):
         writer_intermediate = pd.ExcelWriter('LD Train All Days Parameters.xlsx', engine='xlsxwriter')
         print('A file called LD Train All Days Parameters.xlsx has been created at:', script_location)
     except PermissionError:
+        mb.showerror('Parameterized Error', 'LD Train All Days Parameters.xlsx is opened! Please close them!')
         print(
             'LD Train All Days Parameters.xlsx is opened! Please close them!')
         return None
@@ -167,6 +171,7 @@ def general_parameterized(df, name, parameter_list, test_name):
     try:
         some_writer = pd.ExcelWriter(name + ' All Days Parameters.xlsx', engine='xlsxwriter')
     except PermissionError:
+        mb.showerror('Parameterized Error', name + ' All Days Parameters.xlsx is opened! Please close them!')
         print(name, 'All Days Parameters.xlsx', 'is opened! Please close them!')
         return
     max_days = df['Day'].max()
@@ -200,18 +205,23 @@ def pi_para_button(min_trials, percent_one, percent_two):
     try:
         minimum_trials = int(min_trials.get())
     except ValueError:
+        mb.showerror('Parameterized Error', 'pi_para_button() error: The minimum trials is empty or invalid!')
         print('pi_para_button() error: The minimum trials is empty or invalid!')
         return
 
     try:
         correct_one = int(percent_one.get())
     except ValueError:
+        mb.showerror('Parameterized Error',
+                     'pi_para_button() error: The percent correctness for the first day is empty or invalid!')
         print('pi_para_button() error: The percent correctness for the first day is empty or invalid!')
         return
 
     try:
         correct_two = int(percent_two.get())
     except ValueError:
+        mb.showerror('Parameterized Error',
+                     'pi_para_button() error: The percent correctness for the second day is empty or invalid!')
         print('pi_para_button() error: The percent correctness for the second day is empty or invalid!')
         return
 
@@ -233,18 +243,22 @@ def acq_para_button(criteria, correct_amount, session_length):
     try:
         criteria_value = int(criteria.get())
     except ValueError:
+        mb.showerror('Parameterized Error',
+                     'acq_para_button() error: The n days in a row criteria is empty or invalid!')
         print('acq_para_button() error: The n days in a row criteria is empty or invalid!')
         return None
 
     try:
         correct_trials_num = int(correct_amount.get())
     except ValueError:
+        mb.showerror('Parameterized Error', 'acq_para_button() error: The correct trials criteria is empty or invalid!')
         print('acq_para_button() error: The correct trials criteria is empty or invalid!')
         return None
 
     try:
         session_time_sec = int(session_length.get())
     except ValueError:
+        mb.showerror('Parameterized Error', 'acq_para_button() error: The session length criteria is empty or invalid!')
         print('acq_para_button() error: The session length criteria is empty or invalid!')
         return None
 
@@ -269,12 +283,14 @@ def ext_para_button(criteria, omissions_amount):
         criteria_value = int(criteria_list[0])
         criteria_max_days = int(criteria_list[1])
     except ValueError:
+        mb.showerror('Parameterized Error', 'ext_para_button() error: The n/n+1 days criteria is empty or invalid!')
         print('ext_para_button() error: The n/n+1 days criteria is empty or invalid!')
         return
 
     try:
         omissions_count = int(omissions_amount.get())
     except ValueError:
+        mb.showerror('Parameterized Error', 'ext_para_button() error: The omissions amount is empty or invalid')
         print('ext_para_button() error: The omissions amount is empty or invalid')
         return
 
@@ -298,6 +314,8 @@ def ld_train_para_button(criteria, min_reversal_number):
     try:
         min_rev = int(min_reversal_number.get())
     except ValueError:
+        mb.showerror('Parameterized Error',
+                     'ld_train_para_button() error: The minimum required reversal number is empty or invalid!')
         print('ld_train_para_button() error: The minimum required reversal number is empty or invalid!')
         return None
 
@@ -305,6 +323,8 @@ def ld_train_para_button(criteria, min_reversal_number):
         criteria_value = int(criteria_list[0])
         criteria_max_days = int(criteria_list[1])
     except ValueError:
+        mb.showerror('Parameterized Error',
+                     'ld_train_para_button() error: The n/n+1 days criteria is empty or invalid!')
         print('ld_train_para_button() error: The n/n+1 days criteria is empty or invalid!')
         return None
 

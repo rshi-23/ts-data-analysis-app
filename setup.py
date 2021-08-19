@@ -3,6 +3,7 @@ import os
 from setuptools import glob
 import warnings
 from setup_functions import *
+import tkinter.messagebox as mb
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = 'raise'
@@ -33,6 +34,8 @@ def specific_schedule_name(df, schedule_name):
         df = df.reset_index(drop=True)
         return df
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error", 'specific_schedule_name() error: either you have selected the wrong type of test'
+                                    ' or the headers are not the same for all files!')
         print('specific_schedule_name() error: either you have selected the wrong type of test',
               'or the headers are not the same for all files!')
 
@@ -56,8 +59,11 @@ def create_merge_file(df, script_location):
             'A file called "merged_file.csv" has been created in the same directory as the script! The location is:',
             script_location)
     except PermissionError:
+        mb.showerror("Setup Error",
+                     'create_merge_file() error: You may have the "merged_file.csv" already open! Please close it!')
         print('create_merge_file() error: You may have the "merged_file.csv" already open! Please close it!')
     except AttributeError:
+        mb.showerror("Setup Error", 'create_merge_file() error: These are not the correct raw data files!')
         print('create_merge_file() error: These are not the correct raw data files!')
 
 
@@ -80,9 +86,13 @@ def create_dropped_duplicates_file(df, script_location):
         print('A file called "dropped_duplicates.csv" has been created in the same directory! The location is:',
               script_location)
     except PermissionError:
+        mb.showerror("Setup Error",
+                     'create_dropped_duplicates_file() error: You may have the "merged_file.csv" already open!'
+                     ' Please close it!')
         print('create_dropped_duplicates_file() error: You may have the "merged_file.csv" already open!',
               'Please close it!')
     except AttributeError:
+        mb.showerror("Setup Error", 'create_dropped_duplicates_file() error: These are not the correct raw data files!')
         print('create_dropped_duplicates_file() error: These are not the correct raw data files!')
 
 
@@ -176,6 +186,8 @@ def habituation_one(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error", 'habituation_one() error: either you selected the wrong type of test'
+                                    ' or headers are not the same on all files!')
         print('habituation_one() error: either you selected the wrong type of test '
               'or headers are not the same on all files!')
         return
@@ -254,6 +266,8 @@ def habituation_two(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error", 'habituation_two() error: Either you selected the wrong type of test '
+                                    ' or headers are not the same on all files!')
         print(
             'habituation_two() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
@@ -327,6 +341,8 @@ def initial_touch(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error", 'initial_touch() error: Either you selected the wrong type of test '
+                                    ' or headers are not the same on all files!')
         print(
             'initial_touch() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
@@ -406,6 +422,8 @@ def must_touch_initiate(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error", 'must_touch_initiate() error: Either you selected the wrong type of test '
+                                    ' or headers are not the same on all files!')
         print(
             'must_touch_initiate() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
@@ -485,6 +503,8 @@ def punish_incorrect(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error", 'punish_incorrect() error: Either you selected the wrong type of test '
+                                    ' or headers are not the same on all files!')
         print(
             'punish_incorrect() error: Either you selected the wrong type of test '
             'or headers are not the same on all files!')
@@ -598,6 +618,8 @@ def ld(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
+        mb.showerror("Setup Error",
+                     'ld() error: Either you selected the wrong type of test or headers are not the same on all files!')
         print('ld() error: Either you selected the wrong type of test or headers are not the same on all files!')
         return None
 
@@ -670,7 +692,10 @@ def acquisition(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Acq() error: Either you selected the wrong type of test or headers are not the same on all files!')
+        mb.showerror("Setup Error",
+                     'acquisition() error: Either you selected the wrong type of test or headers are not the same on all files!')
+        print(
+            'acquisition() error: Either you selected the wrong type of test or headers are not the same on all files!')
         return None
     print('The program is almost done running... Please wait....')
 
@@ -740,7 +765,10 @@ def extinction(df, script_location):
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
-        print('Either you selected the wrong type of test or headers are not the same on all files!')
+        mb.showerror("Setup Error",
+                     'extinction() error: Either you selected the wrong type of test or headers are not the same on all files!')
+        print(
+            'extinction() error: Either you selected the wrong type of test or headers are not the same on all files!')
         return None
 
     print('The program is almost done running... Please wait....')
@@ -768,6 +796,7 @@ def data_setup(test_type):
     file_path = filedialog.askdirectory(title='Open the directory with csv files')
 
     if len(file_path) == 0:
+        mb.showerror("Setup Error", 'data_setup() error: The cancel button was clicked! Please try again!')
         print('The cancel button was clicked! Please try again!')
         return
 
@@ -781,6 +810,8 @@ def data_setup(test_type):
     try:
         df = pd.read_csv(files[0], encoding='utf-8', delimiter=',', error_bad_lines=False)
     except IndexError:
+        mb.showerror("Setup Error",
+                     'data_setup() error: Either the directory is empty or does not contain any .csv files!')
         print('data_setup() error: Either the directory is empty or does not contain any .csv files!')
         return
     # append all the other csv files onto the current dataframe
@@ -795,6 +826,9 @@ def data_setup(test_type):
             df_hab_one = habituation_one(df_specific, script_location)
             return df_hab_one
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with Hab 1 in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with Hab 1 in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -805,6 +839,9 @@ def data_setup(test_type):
             df_hab_two = habituation_two(df_specific, script_location)
             return df_hab_two
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with Hab 2 in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with Hab 2 in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -815,6 +852,9 @@ def data_setup(test_type):
             df_initial_touch = initial_touch(df_specific, script_location)
             return df_initial_touch
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with IT in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with IT in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -825,6 +865,9 @@ def data_setup(test_type):
             df_must_touch = must_touch_initiate(df_specific, script_location)
             return df_must_touch
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with MT in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with MT in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -835,6 +878,9 @@ def data_setup(test_type):
             df_must_initiate = must_touch_initiate(df_specific, script_location)
             return df_must_initiate
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with MI in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with MI in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -845,6 +891,9 @@ def data_setup(test_type):
             df_punish_incorrect = punish_incorrect(df_specific, script_location)
             return df_punish_incorrect
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with PI in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with PI in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -855,6 +904,9 @@ def data_setup(test_type):
             df_ld = ld(df_specific, script_location)
             return df_ld
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with LD Train/LD Probe in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with LD Train/LD Probe in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -865,6 +917,9 @@ def data_setup(test_type):
             df_acq = acquisition(df_specific, script_location)
             return df_acq
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with Acq in setup.py!'
+                         ' Make sure you selected the right raw data folder!')
             print('data_setup() error: There is an issue with Acq in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -875,6 +930,9 @@ def data_setup(test_type):
             df_ext = extinction(df_specific, script_location)
             return df_ext
         except (IndexError, ValueError, KeyError, AttributeError):
+            mb.showerror("Setup Error",
+                         'data_setup() error: There is an issue with Ext in setup.py!'
+                         ' Make sure you selected the right raw data folder!)')
             print('data_setup() error: There is an issue with Ext in setup.py!'
                   'Make sure you selected the right raw data folder!')
             return None
@@ -894,6 +952,8 @@ def save_file_message(df):
         print('A .csv file has been created. Please look at it in the saved directory!')
         print('\n')
     except FileNotFoundError:
+        mb.showerror("Setup Error",
+                     'save_file_message() error: You closed the window before saving! Please run the program again!')
         print('save_file_message() error: You closed the window before saving! Please run the program again!')
         print('\n')
         return

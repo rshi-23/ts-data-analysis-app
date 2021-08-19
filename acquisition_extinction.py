@@ -91,18 +91,24 @@ def acq_widget_check(criteria, correct_amount, session_length):
     try:
         criteria_value = int(criteria.get())
     except ValueError:
+        mb.showerror('Acquisition Criteria Error',
+                     'acq_widget_check() error: The n days in a row is either empty or invalid!')
         print('acq_widget_check() error: The n days in a row is either empty or invalid!')
         return None
 
     try:
         correct_trials_num = int(correct_amount.get())
     except ValueError:
+        mb.showerror('Acquisition Criteria Error',
+                     'acq_widget_check() error: The correct trials is either empty or invalid!')
         print('acq_widget_check() error: The correct trials is either empty or invalid!')
         return None
 
     try:
         session_time_sec = int(session_length.get())
     except ValueError:
+        mb.showerror('Acquisition Criteria Error',
+                     'acq_widget_check() error: The session length is either empty or invalid!')
         print('acq_widget_check() error: The session length is either empty or invalid!')
         return None
 
@@ -124,6 +130,8 @@ def button_acquisition_all(criteria, correct_amount, session_length):
         criteria_value, correct_trials_num, session_time_sec = \
             acq_widget_check(criteria, correct_amount, session_length)
     else:
+        mb.showerror('Acquisition Criteria Error',
+                     'button_acquisition_all() error: One of the three criteria is invalid or empty!')
         print('button_acquisition_all() error: One of the three criteria is invalid or empty!')
         return
 
@@ -147,6 +155,8 @@ def button_acquisition_first(criteria, correct_amount, session_length):
         criteria_value, correct_trials_num, session_time_sec = \
             acq_widget_check(criteria, correct_amount, session_length)
     else:
+        mb.showerror('Acquisition Criteria Error',
+                     'button_acquisition_first() error: One of the three criteria is invalid or empty!')
         print('button_acquisition_first() error: One of the three criteria is invalid or empty!')
         return
 
@@ -172,6 +182,8 @@ def button_acquisition_last(criteria, correct_amount, session_length):
         criteria_value, correct_trials_num, session_time_sec = \
             acq_widget_check(criteria, correct_amount, session_length)
     else:
+        mb.showerror('Acquisition Criteria Error',
+                     'button_acquisition_last() error: One of the three criteria is invalid or empty!!')
         print('button_acquisition_last() error: One of the three criteria is invalid or empty!')
         return
 
@@ -198,12 +210,16 @@ def button_acquisition_select_day(select_day, criteria, correct_amount, session_
         criteria_value, correct_trials_num, session_time_sec = \
             acq_widget_check(criteria, correct_amount, session_length)
     else:
+        mb.showerror('Acquisition Criteria Error',
+                     'button_acquisition_select_day() error: One of the three criteria is invalid or empty!')
         print('button_acquisition_select_day() error: One of the three criteria is invalid or empty!')
         return
 
     try:
         selected_day = int(select_day)
     except ValueError:
+        mb.showerror('Acquisition Criteria Day Error',
+                     'button_acquisition_select_day() error: The selected day is empty or invalid!')
         print('button_acquisition_select_day() error: The selected day is empty or invalid!')
         return
 
@@ -230,12 +246,16 @@ def button_acquisition_select_id(select_id, criteria, correct_amount, session_le
         criteria_value, correct_trials_num, session_time_sec = \
             acq_widget_check(criteria, correct_amount, session_length)
     else:
+        mb.showerror('Acquisition Criteria Error',
+                     'button_acquisition_select_id() error: One of the three criteria is invalid or empty!')
         print('button_acquisition_select_id() error: One of the three criteria is invalid or empty!')
         return
 
     try:
         selected_id = int(select_id)
     except ValueError:
+        mb.showerror('Acquisition Criteria ID Error',
+                     'button_acquisition_select_id() error: The selected id is empty or invalid!')
         print('button_acquisition_select_id() error: The selected id is empty or invalid!')
         return
 
@@ -341,12 +361,16 @@ def ext_widget_check(criteria, omission_amount):
     if len(criteria.get()) != 0:
         criteria_list = criteria.get().split('/')
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'ext_widget_check() error: The criteria days are empty or invalid!')
         print('ext_widget_check() error: The criteria days are empty or invalid!')
         return None
 
     try:
         min_omission = int(omission_amount.get())
     except ValueError:
+        mb.showerror('Extinction Criteria Error',
+                     'ext_widget_check() error: The omissions is empty or invalid!')
         print('ext_widget_check() error: The omissions is empty or invalid!')
         return None
 
@@ -366,6 +390,8 @@ def ext_criteria_list_check(criteria_list):
         criteria_max_days = int(criteria_list[1])
         return criteria_value, criteria_max_days
     except ValueError:
+        mb.showerror('Extinction Criteria Error',
+                     'ext_criteria_list_check() error: The criteria days are empty or invalid!')
         print('ext_criteria_list_check() error: The criteria days are empty or invalid!')
         return None
 
@@ -383,12 +409,16 @@ def button_extinction_all(criteria, omission_amount):
     if ext_widget_check(criteria, omission_amount) is not None:
         criteria_list, min_omission = ext_widget_check(criteria, omission_amount)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_all() error: One of the criteria is empty or invalid!')
         print('button_extinction_all() error: One of the criteria is empty or invalid!')
         return None
 
     if ext_criteria_list_check(criteria_list) is not None:
         criteria_value, criteria_max_days = ext_criteria_list_check(criteria_list)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_all() error: One of the criteria is empty or invalid!')
         print('button_extinction_all() error: One of the criteria is empty or invalid!')
         return None
 
@@ -410,12 +440,16 @@ def button_extinction_first(criteria, omission_amount):
     if ext_widget_check(criteria, omission_amount) is not None:
         criteria_list, min_omission = ext_widget_check(criteria, omission_amount)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_first() error: One of the criteria is empty or invalid!')
         print('button_extinction_first() error: One of the criteria is empty or invalid!')
         return None
 
     if ext_criteria_list_check(criteria_list) is not None:
         criteria_value, criteria_max_days = ext_criteria_list_check(criteria_list)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_first() error: One of the criteria is empty or invalid!')
         print('button_extinction_first() error: One of the criteria is empty or invalid!')
         return None
 
@@ -439,12 +473,16 @@ def button_extinction_last_day(criteria, omission_amount):
     if ext_widget_check(criteria, omission_amount) is not None:
         criteria_list, min_omission = ext_widget_check(criteria, omission_amount)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_first() error: One of the criteria is empty or invalid!')
         print('button_extinction_last_day() error: One of the criteria is empty or invalid!')
         return None
 
     if ext_criteria_list_check(criteria_list) is not None:
         criteria_value, criteria_max_days = ext_criteria_list_check(criteria_list)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_last_day() error: One of the criteria is empty or invalid!')
         print('button_extinction_last_day() error: One of the criteria is empty or invalid!')
         return None
 
@@ -469,18 +507,24 @@ def button_extinction_select_day(selected_day, criteria, omission_amount):
     try:
         select_day = int(selected_day.get())
     except ValueError:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_select_day() error: The selected day is empty or invalid!')
         print('button_extinction_select_day() error: The selected day is empty or invalid!')
         return
 
     if ext_widget_check(criteria, omission_amount) is not None:
         criteria_list, min_omission = ext_widget_check(criteria, omission_amount)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_select_day() error: One of the criteria is empty or invalid!')
         print('button_extinction_select_day() error: One of the criteria is empty or invalid!')
         return None
 
     if ext_criteria_list_check(criteria_list) is not None:
         criteria_value, criteria_max_days = ext_criteria_list_check(criteria_list)
     else:
+        mb.showerror('Extinction Criteria Day Error',
+                     'button_extinction_select_day() error: One of the criteria is empty or invalid!')
         print('button_extinction_select_day() error: One of the criteria is empty or invalid!')
         return None
 
@@ -505,18 +549,24 @@ def button_extinction_select_id(selected_id, criteria, omission_amount):
     try:
         select_id = int(selected_id.get())
     except ValueError:
+        mb.showerror('Extinction Criteria ID Error',
+                     'button_extinction_select_id() error: The selected id is empty or invalid!')
         print('button_extinction_select_id() error: The selected id is empty or invalid!')
         return
 
     if ext_widget_check(criteria, omission_amount) is not None:
         criteria_list, min_omission = ext_widget_check(criteria, omission_amount)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_select_id() error: One of the criteria is empty or invalid!')
         print('button_extinction_select_id() error: One of the criteria is empty or invalid!')
         return None
 
     if ext_criteria_list_check(criteria_list) is not None:
         criteria_value, criteria_max_days = ext_criteria_list_check(criteria_list)
     else:
+        mb.showerror('Extinction Criteria Error',
+                     'button_extinction_select_id() error: One of the criteria is empty or invalid!')
         print('button_extinction_select_id() error: One of the criteria is empty or invalid!')
         return None
 

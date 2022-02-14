@@ -122,15 +122,15 @@ def get_percent_correctness_first(df1, df2, column_names):
         if np.isnan(stop_point) or index[1]['End Summary - Times Criteria reached (1)'] == 0:
             stop_point = df1.at[index[0], 'End Summary - Trials Completed (1)']
             df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1.at[index[
-                                                                         0], 'End Summary - Percentage Correct (1)'] / 100
+                                                                         0], 'End Summary - Percentage Correct (1)']
             int_stop_point = int(stop_point)
 
-            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point + 1]].mean(axis=1)[
-                index[0]]
+            df1.at[index[0], 'PercentCorrectTo1stReversal'] = (df1[column_names[0:int_stop_point + 1]].mean(axis=1)[
+                index[0]]) * 100
             df2.at[index[0], 'NumberOfTrialTo1stReversal'] = int_stop_point + 1
         else:
             int_stop_point = int(stop_point)
-            df1.at[index[0], 'PercentCorrectTo1stReversal'] = df1[column_names[0:int_stop_point]].mean(axis=1)[index[0]]
+            df1.at[index[0], 'PercentCorrectTo1stReversal'] = (df1[column_names[0:int_stop_point]].mean(axis=1)[index[0]]) * 100
 
 
 def get_percent_correctness_second(df1, df2, column_names):
@@ -154,13 +154,13 @@ def get_percent_correctness_second(df1, df2, column_names):
             int_start_point = int(start_point)
             list_wo_nans = df1[column_names[int_start_point:]].count(axis=1).tolist()
             df1.at[index[0], 'PercentCorrectTo2ndReversal'] = \
-                df1[column_names[int_start_point:]].mean(axis=1)[index[0]]
+                (df1[column_names[int_start_point:]].mean(axis=1)[index[0]]) * 100
             df2.at[index[0], 'NumberOfTrialTo2ndReversal'] = list_wo_nans[index[0]]
         else:
             int_start_point = int(start_point)
             int_stop_point = int(stop_point)
             df1.at[index[0], 'PercentCorrectTo2ndReversal'] = \
-                df1[column_names[int_start_point:int_stop_point]].mean(axis=1)[index[0]]
+                (df1[column_names[int_start_point:int_stop_point]].mean(axis=1)[index[0]]) * 100
 
 
 def get_test_type(df1, column_names):

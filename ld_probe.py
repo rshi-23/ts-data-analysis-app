@@ -16,6 +16,21 @@ def get_last_day_difficulty(df):
     df.drop(df.loc[df['Day'] % 2 == 1].index, inplace=True)
 
 
+def get_first_day_difficulty(df):
+    """
+    This function gets the first day of each difficulty for each LD Probe block. Since each block is 4 days by default,
+    this function will return every 1st and 3rd day. If there are multiple blocks being passed in, the function will
+    accurately assign which block the animal's row belongs to.
+
+    :param df: A dataframe that represents all the cleaned LD Probe data.
+    """
+
+    df['Day'] = df.groupby('ID').cumcount() + 1
+    df['Day'] = df['Day'].astype(float)
+    df['Block'] = np.ceil(df['Day'] / 4)
+    df.drop(df.loc[df['Day'] % 2 == 0].index, inplace=True)
+
+
 def ld_probe_delete_other_difficulties(df):
     """
     This function deletes the other location discrimination difficulties that are not used in LD Probe. Since both LD
@@ -43,6 +58,19 @@ def ld_probe_last_day_difficulty():
     if df is not None:
         ld_probe_delete_other_difficulties(df)
         get_last_day_difficulty(df)
+        save_file_message(df)
+
+
+def ld_probe_first_day_difficulty():
+    """
+    This function creates a csv file for the LD Probe test. Each row will be the last day of each difficulty within each
+    block. Afterward, the function will ask the user to save the newly created csv file in a directory.
+    """
+
+    df = data_setup('LD Probe')
+    if df is not None:
+        ld_probe_delete_other_difficulties(df)
+        get_first_day_difficulty(df)
         save_file_message(df)
 
 
@@ -363,63 +391,67 @@ def make_ld_probe_buttons(tk, root):
     """
 
     # creates all ld probe buttons
+    ld_probe_first_day_all = tk.Button(root, text='LD Probe (First Day Difficulty All)',
+                                       command=ld_probe_first_day_difficulty, width=30)
+    ld_probe_first_day_all.grid(row=0, column=0)
+
     ld_probe_button_last_day_all = tk.Button(root, text='LD Probe (Last Day Difficulty All)',
                                              command=ld_probe_last_day_difficulty, width=30)
-    ld_probe_button_last_day_all.grid(row=0, column=0)
+    ld_probe_button_last_day_all.grid(row=1, column=0)
 
     ld_probe_enter_day = tk.Entry(root, width=30, justify='center')
-    ld_probe_enter_day.grid(row=1, column=1)
+    ld_probe_enter_day.grid(row=2, column=1)
     ld_probe_button_select_day = tk.Button(root, text='LD Probe (Select Day)',
                                            command=lambda: ld_probe_select_day(ld_probe_enter_day), width=30)
-    ld_probe_button_select_day.grid(row=1, column=0)
+    ld_probe_button_select_day.grid(row=2, column=0)
 
     ld_probe_enter_id = tk.Entry(root, width=30, justify='center')
-    ld_probe_enter_id.grid(row=2, column=1)
+    ld_probe_enter_id.grid(row=3, column=1)
     ld_probe_button_select_id = tk.Button(root, text='LD Probe (Select ID)',
                                           command=lambda: ld_probe_select_id(ld_probe_enter_id), width=30)
-    ld_probe_button_select_id.grid(row=2, column=0)
+    ld_probe_button_select_id.grid(row=3, column=0)
 
     ld_probe_block_number = tk.Entry(root, width=30, justify='center')
-    ld_probe_block_number.grid(row=3, column=1)
+    ld_probe_block_number.grid(row=4, column=1)
     ld_probe_button_select_block = tk.Button(root, text='LD Probe (Select Block)',
                                              command=lambda: ld_probe_select_block(
                                                  ld_probe_block_number), width=30)
-    ld_probe_button_select_block.grid(row=3, column=0)
+    ld_probe_button_select_block.grid(row=4, column=0)
 
     spacer_btn = tk.Label(root, text='', width=57, bg='#D6D6D6')
-    spacer_btn.grid(row=4, columnspan=2)
+    spacer_btn.grid(row=5, columnspan=2)
 
     ld_probe_button_last_day_avg = tk.Button(root, text='LD Probe (Last Day All Avg)', command=ld_probe_last_day_avg,
                                              width=30
                                              )
-    ld_probe_button_last_day_avg.grid(row=5, column=0)
+    ld_probe_button_last_day_avg.grid(row=6, column=0)
 
     ld_probe_button_block_avg_text = tk.Entry(root, width=30, justify='center')
-    ld_probe_button_block_avg_text.grid(row=6, column=1)
+    ld_probe_button_block_avg_text.grid(row=7, column=1)
     ld_probe_button_block_avg = tk.Button(root, text='LD Probe (Block Avg)',
                                           command=lambda: ld_probe_block_average(ld_probe_button_block_avg_text),
                                           width=30)
-    ld_probe_button_block_avg.grid(row=6, column=0)
+    ld_probe_button_block_avg.grid(row=7, column=0)
 
     ld_probe_button_id_avg_text = tk.Entry(root, width=30, justify='center')
-    ld_probe_button_id_avg_text.grid(row=7, column=1)
+    ld_probe_button_id_avg_text.grid(row=8, column=1)
     ld_probe_button_id_avg = tk.Button(root, text='LD Probe (ID Avg Easy)',
                                        command=lambda: ld_probe_id_average(ld_probe_button_id_avg_text, 'easy'),
                                        width=30)
-    ld_probe_button_id_avg.grid(row=7, column=0)
+    ld_probe_button_id_avg.grid(row=8, column=0)
 
     ld_probe_button_id_avg_text_two = tk.Entry(root, width=30, justify='center')
-    ld_probe_button_id_avg_text_two.grid(row=8, column=1)
+    ld_probe_button_id_avg_text_two.grid(row=9, column=1)
     ld_probe_button_id_avg_two = tk.Button(root, text='LD Probe (ID Avg Hard)',
                                            command=lambda: ld_probe_id_average(ld_probe_button_id_avg_text, 'hard'),
                                            width=30)
-    ld_probe_button_id_avg_two.grid(row=8, column=0)
+    ld_probe_button_id_avg_two.grid(row=9, column=0)
 
     ld_probe_button_avg_easy = tk.Button(root, text='LD Probe (Avg Easy)',
                                          command=lambda: ld_probe_type_average('easy'),
                                          width=30)
-    ld_probe_button_avg_easy.grid(row=9, column=0)
+    ld_probe_button_avg_easy.grid(row=10, column=0)
     ld_probe_button_avg_hard = tk.Button(root, text='LD Probe (Avg Hard)',
                                          command=lambda: ld_probe_type_average('hard'),
                                          width=30)
-    ld_probe_button_avg_hard.grid(row=10, column=0)
+    ld_probe_button_avg_hard.grid(row=11, column=0)

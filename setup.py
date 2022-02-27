@@ -615,6 +615,7 @@ def ld(df, script_location):
         df_final['PercentCorrectTo2ndReversal'] = df['PercentCorrectTo2ndReversal']
 
         df_final['Day'] = df_final.groupby('ID').cumcount() + 1
+        df_final['Day Within Block'] = df_final['Day'] % 4
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):
@@ -903,7 +904,8 @@ def data_setup(test_type):
             df_specific = specific_schedule_name(df, 'Mouse LD 1 choice reversal v3')
             df_ld = ld(df_specific, script_location)
             return df_ld
-        except (IndexError, ValueError, KeyError, AttributeError):
+        except (IndexError, ValueError, KeyError, AttributeError) as e:
+            print(e)
             mb.showerror("Setup Error",
                          'data_setup() error: There is an issue with LD Train/LD Probe in setup.py!'
                          ' Make sure you selected the right raw data folder!')

@@ -616,6 +616,7 @@ def ld(df, script_location):
 
         df_final['Day'] = df_final.groupby('ID').cumcount() + 1
         df_final['Day Within Block'] = df_final['Day'] % 4
+        df_final['Day Within Block'] = df_final['Day Within Block'].apply(lambda x: x if x != 0 else 4)
 
         df_final = df_final.sort_values(by=['ID', 'Date'])
     except (IndexError, KeyError, ValueError):

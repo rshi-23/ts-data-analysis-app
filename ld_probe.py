@@ -14,6 +14,7 @@ def get_last_day_difficulty(df):
     df['Day'] = df['Day'].astype(float)
     df['Block'] = np.ceil(df['Day'] / 4)
     df.drop(df.loc[df['Day'] % 2 == 1].index, inplace=True)
+    df.sort_values(by=['Block', 'Type', 'ID'], inplace=True)
 
 
 def get_first_day_difficulty(df):
@@ -29,6 +30,7 @@ def get_first_day_difficulty(df):
     df['Day'] = df['Day'].astype(float)
     df['Block'] = np.ceil(df['Day'] / 4)
     df.drop(df.loc[df['Day'] % 2 == 0].index, inplace=True)
+    df.sort_values(by=['Block', 'Type', 'ID'], inplace=True)
 
 
 def ld_probe_delete_other_difficulties(df):

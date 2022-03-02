@@ -248,7 +248,6 @@ def button_ld_train_select_day(enter_day, criteria, min_reversal_number):
         ld_train_delete_other_difficulties(df)
         get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
         df = df.loc[df['Day'] == selected_day]
-        print(selected_day, 'here')
         save_file_message(df)
     else:
         mb.showerror('LD Train Criteria Error',
@@ -328,7 +327,7 @@ def button_ld_train_last_day(criteria, min_reversal_number):
     df = data_setup('LD Train')
     if df is not None:
         ld_train_delete_other_difficulties(df)
-        get_ld_train_normal(df, criteria_value, criteria_max_days, min_rev)
+        df = get_ld_last_days(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
     else:
         mb.showerror('LD Train Criteria Error',

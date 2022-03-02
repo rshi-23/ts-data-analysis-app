@@ -30,7 +30,7 @@ def convert_to_int(header_index_range, raw_data_headers, dataframe):
 
     # replace NaNs and - (no values/blank spaces) with a very large placeholder number
     dataframe.replace(np.nan, '999999999', regex=True, inplace=True)
-    dataframe.replace('-', '999999999', regex=True, inplace=True)
+    dataframe.replace('^[-]{1}$', '999999999', regex=True, inplace=True)
 
     header_names_range = get_header_names(raw_data_headers, header_index_range)
 
@@ -130,7 +130,8 @@ def get_percent_correctness_first(df1, df2, column_names):
             df2.at[index[0], 'NumberOfTrialTo1stReversal'] = int_stop_point + 1
         else:
             int_stop_point = int(stop_point)
-            df1.at[index[0], 'PercentCorrectTo1stReversal'] = (df1[column_names[0:int_stop_point]].mean(axis=1)[index[0]]) * 100
+            df1.at[index[0], 'PercentCorrectTo1stReversal'] = (df1[column_names[0:int_stop_point]].mean(axis=1)[
+                index[0]]) * 100
 
 
 def get_percent_correctness_second(df1, df2, column_names):

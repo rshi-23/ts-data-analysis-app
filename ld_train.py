@@ -327,7 +327,7 @@ def button_ld_train_last_day(criteria, min_reversal_number):
     df = data_setup('LD Train')
     if df is not None:
         ld_train_delete_other_difficulties(df)
-        df = get_ld_last_days(df, criteria_value, criteria_max_days, min_rev)
+        get_ld_train_criteria_day_all(df, criteria_value, criteria_max_days, min_rev)
         save_file_message(df)
     else:
         mb.showerror('LD Train Criteria Error',

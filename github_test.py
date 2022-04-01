@@ -1,1 +1,1 @@
-g
+print('hello worldgi')
